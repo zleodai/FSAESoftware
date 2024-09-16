@@ -1,0 +1,24 @@
+CMSI 4071 Fall 2024
+Project Proposal Feedback
+Project: FSAE Formula SAE Car Software
+=========================
+Proposal Document [2 points]:
+The document covers all the bases.  You provide good outlines of what you
+want the software to accomplish, along with the hardware and what it will
+be used for in the design.  The separation of concerns looks good.
+
+The justification speeks well to the integration of your knowledge and
+interests and provides a good overview of what technologies and software
+languages you will need.  Very nice work, but then you've had a while to
+get this ironed out, right?  :D
+
+Proposal Presentation [3 points]:
+Nice presentation, skillfully done.  Everyone had a part, and it seemed
+that everyone was able to answer any of the questions that arose.
+
+
+Summary:
+--------
+Total:  5% out of 5% for this deliverable.
+
+Nice job overall!  Keep up the good work.
