@@ -1,0 +1,58 @@
+
+Documentation Feedback ~ Deliverable #2
+Software Requirements Specification
+Initial Development Schedule
+CMSI 4071 Fall 2024
+=======================================
+
+COMPONENT BREAKDOWN:
+   This is amazing!  You have completely detailed all the parts for your
+   software and they are logically and clearly laid out.  Obviously you
+   have 'done your homework' on this.....
+
+FUNCTIONAL REQUIREMENTS:
+   Here again this section is looking very good.  Remember, though, that
+   each requirement should be a single statement.  If you have multiple
+   sentences in a numbered requirement, that shows you that there are at
+   minimum a requirement statement and a 'will' statement, or possibly
+   even two or three requirement statements.  For example:
+
+      5.3.1.2.1 The Database shall store real-time telemetry data
+                The Database will securely store real-time telemetry data
+                received from the vehicle, ensuring minimal data loss
+                during transmission.
+                Minimal data loss will be defined as being no more than one
+                bit of every 100,000 bits transferred.
+   Next, watch the 'weasel words':
+
+      5.3.1.2.2 The Database shall support wireless data transmission.
+
+   What do you mean by 'support'?  How does a database engine 'support' any
+   transmission ~ isn't that the job of the networking hardware?
+
+   Last item: since you are using numbered requirements, NO BULLETS on the
+   requirement statements.  The numbers are enough, especially if you use
+   'hanging indents'...
+
+PERFORMANCE REQUIREMENTS:
+   This section has the right language for 'shall' statements, and has the
+   appropriate level of detail.  Good work.
+
+ENVIRONMENT REQUIREMENTS:
+
+
+OVERALL ASSESSMENT:
+   Category                          Points
+   Component Breakdown                 1/1
+   Functional Requirements           3.5/4
+   Performance Requirements            2/2
+   Environment Requirements            1/1
+                                     =====
+   Subtotal                            8/8
+   Preliminary Schedule                2/2
+   ------------------------------------------------------
+   Total Percentage:   9.5/10 = 95% which is an A
+
+Great job!  Clean up those requirements as noted above by the end of the
+semester for full credit on this document.  Keep it up!
+
