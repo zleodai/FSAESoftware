@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// fyne docs: https://docs.fyne.io/
 	a := app.New()
 	w := a.NewWindow("FSAE Telemetry")
 	a.Settings().SetTheme(theme.DarkTheme())
