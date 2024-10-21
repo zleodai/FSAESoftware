@@ -1,7 +1,0 @@
-To initialize a database cluster run
-
-``` initdb -D FILE_PATH ```
-
-To start the server run
-
-``` postgres -p PORT_NUMBER -D FILE_PATH ```
