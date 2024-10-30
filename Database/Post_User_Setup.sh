@@ -10,4 +10,15 @@ export PATH
 
 createdb telemetrydb
 psql telemetrydb
+
+#for datatypes in postgresql https://www.postgresql.org/docs/current/datatype.html
+
+CREATE TABLE telemetry {
+    time_step       time,
+    tire_temps      float ARRAY[4],
+    velocity        float,
+    acceleration    float,
+    location        point
+};
+
 \q

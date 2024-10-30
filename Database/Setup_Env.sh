@@ -1,5 +1,5 @@
 echo "Note you must be running this on wsl if you are on a windows machine"
-echo "To install wsl type in wsl --install"
+echo "To install wsl run: wsl --install -d Ubuntu"
 
 sudo apt install make
 Y
