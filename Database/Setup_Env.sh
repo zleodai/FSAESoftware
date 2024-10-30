@@ -1,46 +1,30 @@
 echo "Note you must be running this on wsl if you are on a windows machine"
 echo "To install wsl run: wsl --install -d Ubuntu"
 
-sudo apt install make
-Y
-
-sudo apt install build-essential
-Y
-
-sudo apt install tar
-Y
-
-sudo apt install gzip
-Y
-
-sudo apt install flex
-Y
-
-sudo apt install m4
-Y
+sudo apt-get install make -y
+sudo apt-get install build-essential -y
+sudo apt-get install tar -y
+sudo apt-get install gzip -y
+sudo apt-get install flex -y
+sudo apt-get install m4 -y
 PATH=$PATH:/usr/local/m4/bin/
 
 wget http://ftp.gnu.org/gnu/bison/bison-2.3.tar.gz
 tar -xvzf bison-2.3.tar.gz
+cd bison-2.3
 ./configure --prefix=/usr/local/bison --with-libiconv-prefix=/usr/local/libiconv/
 make
 sudo make install
 cd ..
+rm -r bison-2.3
+rm bison-2.3.tar.gz
 
-sudo apt install perl
-Y
-
-sudo apt install zlib1g
-Y
-
-sudo apt-get install libicu-dev
-Y
-
-sudo apt-get install zlib1g-dev
-Y
-
-sudo apt install pkgconf
-Y
+sudo apt-get install bison -y
+sudo apt-get install perl -y
+sudo apt-get install zlib1g -y
+sudo apt-get install libicu-dev -y
+sudo apt-get install zlib1g-dev -y
+sudo apt-get install pkgconf -y
 
 git clone https://git.postgresql.org/git/postgresql.git
 cd postgresql/
@@ -49,3 +33,5 @@ make
 su
 make install
 adduser postgres
+
+cd ..
