@@ -1,6 +1,10 @@
 echo "Note you must be running this on wsl if you are on a windows machine"
 echo "To install wsl run: wsl --install -d Ubuntu"
 
+mkdir /usr/local/postgresSetup
+
+cd /usr/local/postgresSetup
+
 sudo apt-get install make -y
 sudo apt-get install build-essential -y
 sudo apt-get install tar -y
