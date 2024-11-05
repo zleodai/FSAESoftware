@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -r /usr/local/pgsql/data
 
 mkdir -p /usr/local/pgsql/data
@@ -5,7 +7,7 @@ chown postgres /usr/local/pgsql/data
 
 su - postgres -c "  /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data;"
 
-cp -a Create_Database.sql createDB.sql 
+cp -a SQLCreateDB.sql createDB.sql 
 mv createDB.sql /usr/local/pgsql/data
 
 su - postgres -c "  /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile start; 
