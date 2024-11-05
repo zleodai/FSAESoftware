@@ -23,10 +23,3 @@ CREATE TABLE telemetry (
     limited_slip_usage              float[2],
     log                             varchar[100]
 );
-
--- INSERT INTO telemetry (date, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_lost, abs_throttle_limiting, limited_slip_usage)
-
--- INSERT INTO telemetry (date, time_step, x_acceleration, y_acceleration, z_acceleration)
---     VALUES (CURRENT_DATE::date, NOW()::time, 0, 0, 0);
-
--- SELECT date, time_step, x_acceleration, y_acceleration, z_acceleration FROM telemetry;
