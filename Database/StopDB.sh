@@ -1,1 +1,1 @@
-su - postgres -c "/usr/local/pgsql/bin/pg_ctl stop -D /usr/local/pgsql/data"
+./FSAESoftwareBinaryImports/pgsql/bin/pg_ctl stop -D ./postgresServer

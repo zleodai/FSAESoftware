@@ -1,1 +1,1 @@
-su - postgres -c "/usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile start;"
+./FSAESoftwareBinaryImports/pgsql/bin/pg_ctl -D ./postgresServer -l logfile start 
