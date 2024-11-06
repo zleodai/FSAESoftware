@@ -12,6 +12,7 @@ mv createDB.sql /usr/local/pgsql/data
 
 su - postgres -c "  /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile start; 
                     /usr/local/pgsql/bin/createdb telemetrydb;
+                    /usr/local/pgsql/bin/createuser FSAE_DB_User
                     /usr/local/pgsql/bin/psql -a -f /usr/local/pgsql/data/createDB.sql;
                     /usr/local/pgsql/bin/pg_ctl stop -D /usr/local/pgsql/data"
 
