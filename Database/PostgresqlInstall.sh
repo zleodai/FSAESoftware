@@ -29,7 +29,6 @@ sudo apt-get install libicu-dev -y
 sudo apt-get install zlib1g-dev -y
 sudo apt-get install pkgconf -y
 sudo apt-get install git -y
-sudo apt-get install net-tools
 
 export GIT_TRACE_PACKET=1
 export GIT_TRACE=1
