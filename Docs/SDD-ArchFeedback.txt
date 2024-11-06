@@ -1,0 +1,35 @@
+
+Documentation Feedback ~ Deliverable #4
+Software Design Document ~ Architecture
+CMSI 4071 Fall 2024
+=======================================
+
+SDD: ARCHITECTURAL DESIGN SECTION:
+   Major software components section
+   Major software interactions section
+   Architectural design diagrams section
+
+OVERALL ASSESSMENT:
+   Category                          Points
+   --------------------------------  ---------
+   ARCHITECTURAL DESIGN SECTION:
+   Major software components            2 of 2
+   Major software interactions          2 of 2
+   Architectural design diagrams        5 of 6
+                                     ======
+   Subtotal                             9
+   ------------------------------------------------------
+   Total Percentage:  9/10 = 90% which is an A-minus
+
+============================================================================
+COMMENTS
+Nice job on this preliminary document!  A couple of comments:
+
+This is very complete and tells the story well!  The only thing is that the
+diagram names are not correct.  The "detailed_light" one is really a class
+diagram in disguise.  The "top view" is fine as-is, but the "use case" isn't
+a use case diagram, it's more of a "data flow" or "module associations"
+diagram.
+
+Re-label those and you'll be fine.  Turn that in as part of the detailed
+design for full credit on this section.
