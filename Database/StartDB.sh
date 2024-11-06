@@ -1,0 +1,1 @@
+./FSAESoftwareBinaryImports/pgsql/bin/pg_ctl -D ./postgresServer -l logfile start 

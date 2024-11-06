@@ -2,6 +2,8 @@ module github.com/zleodai/FSAESoftware/TelemetryApp
 
 go 1.21.3
 
+require fyne.io/fyne/v2 v2.5.2
+
 require (
 	fyne.io/fyne v1.4.3 // indirect
 	fyne.io/fyne/v2 v2.5.2 // indirect
