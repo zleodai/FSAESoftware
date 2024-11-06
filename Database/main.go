@@ -8,10 +8,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const DATABASE_URL = "postgres://FSAE_DB_User@localhost:5432/telemetrydb" 
-
 func main() {
-	dbpool, err := pgxpool.New(context.Background(), os.Getenv(DATABASE_URL))
+	dbpool, err := pgxpool.New(context.Background(), "postgresql://FSAE_DB_User@localhost:5432/telemetrydb")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
