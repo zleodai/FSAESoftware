@@ -2,20 +2,20 @@
 
 printf "\nStarting Installation\n\n"
 
-# export GIT_TRACE_PACKET=1
-# export GIT_TRACE=1
-# export GIT_CURL_VERBOSE=1
-# git config --global http.postBuffer 157286400
+export GIT_TRACE_PACKET=1
+export GIT_TRACE=1
+export GIT_CURL_VERBOSE=1
+git config --global http.postBuffer 157286400
 
-# git clone https://github.com/zleodai/FSAESoftwareBinaryImports --depth 1;
-# cd pgsql/
-# git fetch --unshallow 
+git clone https://github.com/zleodai/FSAESoftwareBinaryImports --depth 1;
+cd pgsql/
+git fetch --unshallow 
 
-# newpath="$(realpath ./FSAESoftwareBinaryImports/pgsql/bin)"
-# newpath="${newpath//"/"/'\'}"
-# newpath="${newpath/c/C:}"
-# newpath="${newpath/'\'/}"
-# echo "$(path)$newpath"
+newpath="$(realpath ./FSAESoftwareBinaryImports/pgsql/bin)"
+newpath="${newpath//"/"/'\'}"
+newpath="${newpath/c/C:}"
+newpath="${newpath/'\'/}"
+echo "$(path)$newpath"
 
 mkdir -p ./postgresServer
 ./FSAESoftwareBinaryImports/pgsql/bin/initdb -D ./postgresServer
