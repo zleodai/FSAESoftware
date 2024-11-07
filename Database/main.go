@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -16,12 +17,26 @@ func main() {
 	}
 	defer dbpool.Close()
 
-	var greeting string
-	err = dbpool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
+	_, err = dbpool.Exec(context.Background(), "insert into telemetry(date) values (NOW())")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Insertion failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	rows, err := dbpool.Query(context.Background(), "select date from telemetry")
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
-	
+	}
 
-	fmt.Println(greeting)
+	for rows.Next() {
+		var date pgtype.Date
+		oErr := rows.Scan(&date)
+		if oErr != nil {
+			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", oErr)
+			os.Exit(1)
+		}
+		fmt.Println(date)
+	}	
 }
