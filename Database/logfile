@@ -38,3 +38,98 @@
 2024-11-06 17:47:01.302 PST [7720] LOG:  checkpoint starting: shutdown immediate
 2024-11-06 17:47:01.306 PST [7720] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1A23568, redo lsn=0/1A23568
 2024-11-06 17:47:01.312 PST [7284] LOG:  database system is shut down
+2024-11-06 18:25:32.969 PST [3076] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 18:25:32.972 PST [3076] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 18:25:32.972 PST [3076] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 18:25:33.001 PST [3740] LOG:  database system was shut down at 2024-11-06 18:25:06 PST
+2024-11-06 18:25:33.016 PST [3076] LOG:  database system is ready to accept connections
+2024-11-06 18:30:32.997 PST [22548] LOG:  checkpoint starting: time
+2024-11-06 18:30:38.494 PST [22548] LOG:  checkpoint complete: wrote 53 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.486 s, sync=0.006 s, total=5.498 s; sync files=15, longest=0.001 s, average=0.001 s; distance=288 kB, estimate=288 kB; lsn=0/1A27CD8, redo lsn=0/1A27C80
+2024-11-06 18:48:28.807 PST [3076] LOG:  received fast shutdown request
+2024-11-06 18:48:28.808 PST [3076] LOG:  aborting any active transactions
+2024-11-06 18:48:28.812 PST [3076] LOG:  background worker "logical replication launcher" (PID 10800) exited with exit code 1
+2024-11-06 18:48:28.813 PST [22548] LOG:  shutting down
+2024-11-06 18:48:28.814 PST [22548] LOG:  checkpoint starting: shutdown immediate
+2024-11-06 18:48:28.820 PST [22548] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.007 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=259 kB; lsn=0/1A27D88, redo lsn=0/1A27D88
+2024-11-06 18:48:28.827 PST [3076] LOG:  database system is shut down
+2024-11-06 19:39:33.621 PST [28412] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 19:39:33.623 PST [28412] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 19:39:33.624 PST [28412] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 19:39:33.651 PST [7816] LOG:  database system was shut down at 2024-11-06 18:48:28 PST
+2024-11-06 19:39:33.665 PST [28412] LOG:  database system is ready to accept connections
+2024-11-06 19:39:59.543 PST [19408] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 19:41:23.429 PST [22420] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 19:43:14.689 PST [20512] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 19:44:01.585 PST [17272] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 19:44:33.658 PST [26240] LOG:  checkpoint starting: time
+2024-11-06 19:44:33.771 PST [26240] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.104 s, sync=0.004 s, total=0.114 s; sync files=3, longest=0.002 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/1A28A68, redo lsn=0/1A28A10
+2024-11-06 19:47:14.396 PST [17952] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 19:47:36.050 PST [28412] LOG:  received fast shutdown request
+2024-11-06 19:47:36.051 PST [28412] LOG:  aborting any active transactions
+2024-11-06 19:47:36.054 PST [28412] LOG:  background worker "logical replication launcher" (PID 9384) exited with exit code 1
+2024-11-06 19:47:36.055 PST [26240] LOG:  shutting down
+2024-11-06 19:47:36.056 PST [26240] LOG:  checkpoint starting: shutdown immediate
+2024-11-06 19:47:36.061 PST [26240] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.007 s; sync files=2, longest=0.001 s, average=0.001 s; distance=2 kB, estimate=3 kB; lsn=0/1A29508, redo lsn=0/1A29508
+2024-11-06 19:47:36.067 PST [28412] LOG:  database system is shut down
+2024-11-06 19:48:40.601 PST [23560] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 19:48:40.604 PST [23560] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 19:48:40.604 PST [23560] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 19:48:40.632 PST [13572] LOG:  database system was shut down at 2024-11-06 19:48:38 PST
+2024-11-06 19:48:40.646 PST [23560] LOG:  database system is ready to accept connections
+2024-11-06 19:50:00.553 PST [23560] LOG:  received fast shutdown request
+2024-11-06 19:50:00.554 PST [23560] LOG:  aborting any active transactions
+2024-11-06 19:50:00.555 PST [9700] ERROR:  canceling statement due to user request
+2024-11-06 19:50:00.559 PST [23560] LOG:  background worker "logical replication launcher" (PID 9700) exited with exit code 1
+2024-11-06 19:50:00.559 PST [17952] LOG:  shutting down
+2024-11-06 19:50:00.560 PST [17952] LOG:  checkpoint starting: shutdown immediate
+2024-11-06 19:50:00.573 PST [17952] LOG:  checkpoint complete: wrote 46 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.005 s, total=0.014 s; sync files=11, longest=0.001 s, average=0.001 s; distance=265 kB, estimate=265 kB; lsn=0/1A35870, redo lsn=0/1A35870
+2024-11-06 19:50:00.580 PST [23560] LOG:  database system is shut down
+2024-11-06 20:02:35.397 PST [15960] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 20:02:35.400 PST [15960] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 20:02:35.400 PST [15960] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 20:02:35.428 PST [11440] LOG:  database system was shut down at 2024-11-06 19:53:45 PST
+2024-11-06 20:02:35.442 PST [15960] LOG:  database system is ready to accept connections
+2024-11-06 20:02:59.348 PST [25164] ERROR:  syntax error at or near "0.0" at character 116
+2024-11-06 20:02:59.348 PST [25164] STATEMENT:  insert into telemetry(date, time_step, x_acceleration, y_acceleration, z_acceleration) values (CURRENT_DATE, NOW() 0.0, 0.0, 0.0)
+2024-11-06 20:02:59.350 PST [25164] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:04:48.688 PST [14496] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:06:50.477 PST [10760] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:07:35.428 PST [22320] LOG:  checkpoint starting: time
+2024-11-06 20:07:40.633 PST [22320] LOG:  checkpoint complete: wrote 51 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.193 s, sync=0.007 s, total=5.205 s; sync files=14, longest=0.001 s, average=0.001 s; distance=290 kB, estimate=290 kB; lsn=0/1A25800, redo lsn=0/1A257A8
+2024-11-06 20:08:25.520 PST [22684] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:09:58.017 PST [15960] LOG:  received fast shutdown request
+2024-11-06 20:09:58.018 PST [15960] LOG:  aborting any active transactions
+2024-11-06 20:09:58.022 PST [15960] LOG:  background worker "logical replication launcher" (PID 6628) exited with exit code 1
+2024-11-06 20:09:58.022 PST [22320] LOG:  shutting down
+2024-11-06 20:09:58.023 PST [22320] LOG:  checkpoint starting: shutdown immediate
+2024-11-06 20:09:58.029 PST [22320] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.007 s; sync files=2, longest=0.001 s, average=0.001 s; distance=2 kB, estimate=261 kB; lsn=0/1A262A0, redo lsn=0/1A262A0
+2024-11-06 20:09:58.035 PST [15960] LOG:  database system is shut down
+2024-11-06 20:10:16.224 PST [28228] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 20:10:16.227 PST [28228] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 20:10:16.227 PST [28228] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 20:10:16.255 PST [16644] LOG:  database system was shut down at 2024-11-06 20:10:07 PST
+2024-11-06 20:10:16.269 PST [28228] LOG:  database system is ready to accept connections
+2024-11-06 20:10:54.468 PST [6672] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:11:22.753 PST [25428] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:11:52.798 PST [24972] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-06 20:15:16.258 PST [2864] LOG:  checkpoint starting: time
+2024-11-06 20:15:21.468 PST [2864] LOG:  checkpoint complete: wrote 51 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.198 s, sync=0.007 s, total=5.210 s; sync files=14, longest=0.001 s, average=0.001 s; distance=291 kB, estimate=291 kB; lsn=0/1A25CB0, redo lsn=0/1A25C58
+2024-11-06 20:58:56.857 PST [28228] LOG:  received fast shutdown request
+2024-11-06 20:58:56.858 PST [28228] LOG:  aborting any active transactions
+2024-11-06 20:58:56.862 PST [28228] LOG:  background worker "logical replication launcher" (PID 22336) exited with exit code 1
+2024-11-06 20:58:56.862 PST [2864] LOG:  shutting down
+2024-11-06 20:58:56.863 PST [2864] LOG:  checkpoint starting: shutdown immediate
+2024-11-06 20:58:56.868 PST [2864] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.006 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=262 kB; lsn=0/1A25D60, redo lsn=0/1A25D60
+2024-11-06 20:58:56.874 PST [28228] LOG:  database system is shut down
