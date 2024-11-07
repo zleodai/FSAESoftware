@@ -11,11 +11,7 @@ git clone https://github.com/zleodai/FSAESoftwareBinaryImports --depth 1;
 cd pgsql/
 git fetch --unshallow 
 
-newpath="$(realpath ./FSAESoftwareBinaryImports/pgsql/bin)"
-newpath="${newpath//"/"/'\'}"
-newpath="${newpath/c/C:}"
-newpath="${newpath/'\'/}"
-echo "$(path)$newpath"
+powershell ./SetupEnvVar.ps1
 
 mkdir -p ./postgresServer
 ./FSAESoftwareBinaryImports/pgsql/bin/initdb -D ./postgresServer

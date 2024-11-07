@@ -117,3 +117,14 @@ operable program or batch file.
 2024-11-06 14:30:43.064 PST [2340] FATAL:  database "awsom" does not exist
 2024-11-06 14:32:04.992 PST [26684] LOG:  checkpoint starting: time
 2024-11-06 14:32:05.001 PST [26684] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.009 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1A229F8, redo lsn=0/1A229A0
+2024-11-06 15:58:04.845 PST [21480] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-06 15:58:04.848 PST [21480] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-06 15:58:04.848 PST [21480] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-06 15:58:04.884 PST [9868] LOG:  database system was interrupted; last known up at 2024-11-06 14:32:04 PST
+2024-11-06 15:58:05.196 PST [9868] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-11-06 15:58:05.200 PST [9868] LOG:  redo starts at 0/1A229A0
+2024-11-06 15:58:05.200 PST [9868] LOG:  invalid record length at 0/1A22AA8: expected at least 24, got 0
+2024-11-06 15:58:05.200 PST [9868] LOG:  redo done at 0/1A22A70 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-11-06 15:58:05.204 PST [24516] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-11-06 15:58:05.211 PST [24516] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.009 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1A22AA8, redo lsn=0/1A22AA8
+2024-11-06 15:58:05.223 PST [21480] LOG:  database system is ready to accept connections

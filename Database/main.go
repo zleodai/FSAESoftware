@@ -21,7 +21,7 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
-	}
+	
 
 	fmt.Println(greeting)
 }
