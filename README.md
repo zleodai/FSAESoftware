@@ -16,7 +16,6 @@ Repo for the software found in Formula SAE car for LMU. Senior Project
   - [Alerts and Notifications](#alerts-and-notifications)
   - [Customizing the Dashboard](#customizing-the-dashboard)
 - [Troubleshooting](#troubleshooting)
-- [Support](#support)
 
 ---
 
@@ -86,4 +85,3 @@ Each data point updates as new telemetry data is received from the CCU.
   - Verify that WiFi connectivity is active between the app and CCU.
   - Restart the app and reconnect to the database.
 
----
