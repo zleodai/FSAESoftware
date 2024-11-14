@@ -1,87 +1,80 @@
-# FSAESoftware
-Repo for the software found in Formula SAE car for LMU. Senior Project
-
-
-# Telemetry App User Manual
+# Telemetry App User Guide
 
 ## Table of Contents
-- [Overview](#overview)
+- [Introduction](#introduction)
+- [System Requirements](#system-requirements)
+- [Installation](#installation)
 - [Getting Started](#getting-started)
-  - [System Requirements](#system-requirements)
-  - [Installation](#installation)
 - [Using the Telemetry App](#using-the-telemetry-app)
-  - [Main Interface](#main-interface)
-  - [Real-Time Data View](#real-time-data-view)
-  - [Historical Data Access](#historical-data-access)
+  - [Main Dashboard](#main-dashboard)
+  - [Real-Time Data Monitoring](#real-time-data-monitoring)
+  - [Historical Data Analysis](#historical-data-analysis)
   - [Alerts and Notifications](#alerts-and-notifications)
-  - [Customizing the Dashboard](#customizing-the-dashboard)
+  - [Customizing the Interface](#customizing-the-interface)
 - [Troubleshooting](#troubleshooting)
+- [Support and Feedback](#support-and-feedback)
 
 ---
 
-## Overview
-The Telemetry App is designed for use with the Formula SAE vehicle, allowing users to view real-time and historical telemetry data. This data includes critical metrics such as speed, suspension status, and GPS location, all aimed at optimizing vehicle performance.
+## Introduction
+The Telemetry App is designed to provide real-time and historical data monitoring for the Formula SAE vehicle. It offers insights into various vehicle parameters, aiding in performance optimization and diagnostics.
+
+## System Requirements
+- **Operating System:** Windows 10 or higher
+- **Hardware:**
+  - Minimum 8 GB RAM
+  - 20 GB free disk space
+- **Software:**
+  - PostgreSQL (for database management)
+  - Go programming language runtime
+  - Fyne.io framework (included with the app)
+
+## Installation
+1. **Download the Installer:** Obtain the latest version of the Telemetry App installer from the official repository.
+2. **Run the Installer:** Double-click the downloaded file and follow the on-screen instructions to complete the installation.
+3. **Database Setup:** Ensure that PostgreSQL is installed and configured.
 
 ## Getting Started
-
-### System Requirements
-- **Operating System:** Windows 10 or higher
-- **Software Dependencies:**
-  - PostgreSQL (for database)
-  - Go programming language
-  - Fyne.io framework (included with app installation)
-
-### Installation
-1. **Download the Telemetry App** Pull the code or download the zip file from the Github Repo.
-2. **Launch the App:** Double-click the Telemetry App executable to open the application.
-
----
+1. **Launch the App:** Open the Telemetry App from the Start Menu or desktop shortcut.
+2. **Initial Sync:** The app will synchronize with the vehicle's Central Control Unit (CCU) to fetch real-time data. Ensure the vehicle's telemetry system is active.
 
 ## Using the Telemetry App
 
-### Main Interface
-Once opened, the app displays the main dashboard, which provides real-time access to all telemetry data. Navigation options are available on the sidebar, including:
-- **Dashboard:** Default view displaying core telemetry metrics.
-- **Historical Data:** Access past telemetry logs.
-- **Settings:** Customize the data display options.
+### Main Dashboard
+The main dashboard provides an overview of critical vehicle parameters:
+- **Speed:** Current vehicle speed in km/h.
+- **Throttle and Brake Position:** Percentage values indicating pedal positions.
+- **Steering Angle:** Degree of steering input.
+- **Tire Temperatures:** Real-time temperature readings for each tire.
+- **Suspension Status:** Indicators showing suspension system performance.
+- **GPS Location:** Current coordinates and track position.
 
-### Real-Time Data View
-- The main dashboard offers real-time data updates every second.
-- Core metrics shown:
-  - **Speed**
-  - **Throttle and Brake Position**
-  - **Steering Angle**
-  - **Suspension Status**
-  - **GPS Location**
+### Real-Time Data Monitoring
+- **Live Updates:** Data fields update every second to reflect current vehicle status.
+- **Graphical Displays:** Visual graphs for parameters like speed and tire temperatures provide trend analysis.
 
-Each data point updates as new telemetry data is received from the CCU.
-
-### Historical Data Access
-- Navigate to the **Historical Data** tab.
-- Use the date and time filters to specify the time range for the data you want to view.
-- Data displays as graphs and tables, showing trends and allowing you to analyze past performance.
+### Historical Data Analysis
+- **Access Logs:** Navigate to the 'Historical Data' section to view past telemetry records.
+- **Filter Options:** Use date and time filters to narrow down specific sessions or events.
+- **Export Data:** Export data logs in CSV format for external analysis.
 
 ### Alerts and Notifications
-- **Real-Time Alerts:** The app will generate alerts if telemetry data crosses certain thresholds (e.g., high motor temperature, high tire temperature).
-- Visual alerts appear on the dashboard, while audio notifications are triggered for critical alerts.
-- **Alert History:** Navigate to the Alerts section to review past alerts and their timestamps.
+- **Real-Time Alerts:** The app generates alerts for parameters exceeding predefined thresholds (e.g., high tire temperature).
+- **Notification Center:** Access a log of all alerts with timestamps and details.
+- **Customization:** Set custom alert thresholds in the 'Settings' section.
 
-### Customizing the Dashboard
-- Open **Settings** from the sidebar to choose which data metrics to display on the dashboard.
-- **Custom Layouts:** Arrange widgets to prioritize specific data, such as speed or suspension.
-- **Themes and Units:** Customize display colors and units of measurement for each metric.
-
----
+### Customizing the Interface
+- **Dashboard Layout:** Rearrange widgets to prioritize specific data points.
+- **Themes:** Choose between light and dark modes for optimal visibility.
+- **Units of Measurement:** Select preferred units (e.g., km/h or mph) in the 'Settings' menu.
 
 ## Troubleshooting
-
-- **Data Not Displaying:**
-  - Ensure the CCU is connected and transmitting data.
-  - Check the database connection in the Settings section.
-- **Slow Performance:**
-  - Reduce the number of metrics displayed on the dashboard.
-  - Ensure the computer meets the minimum system requirements.
-- **Connection Issues:**
-  - Verify that WiFi connectivity is active between the app and CCU.
-  - Restart the app and reconnect to the database.
-
+- **No Data Displayed:**
+  - Verify that the vehicle's telemetry system is active and transmitting data.
+  - Check the database connection settings in the app.
+- **App Crashes or Freezes:**
+  - Ensure your system meets the minimum requirements.
+  - Restart the app and try again.
+- **Incorrect Data Readings:**
+  - Confirm that all sensors are calibrated and functioning correctly.
+  - Check for any firmware updates for the CCU.
