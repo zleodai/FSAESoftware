@@ -38,3 +38,11 @@
 	
 2024-11-19 04:50:49.324 PST [85320] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
 	
+2024-11-19 04:51:32.870 PST [88780] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-19 04:51:35.303 PST [87244] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-11-19 04:52:26.061 PST [45252] LOG:  background worker "logical replication launcher" (PID 83080) was terminated by exception 0xC000013A
+2024-11-19 04:52:26.061 PST [45252] HINT:  See C include file "ntstatus.h" for a description of the hexadecimal value.
+2024-11-19 04:52:26.061 PST [45252] LOG:  terminating any other active server processes
+2024-11-19 04:52:26.062 PST [45252] LOG:  received fast shutdown request

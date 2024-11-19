@@ -184,4 +184,6 @@ func main() {
 	for _, packet := range *data {
 		print("\nTime: %s", packet.time_step.GoString())
 	}
+
+	CloseConnection(dbpool)
 }
