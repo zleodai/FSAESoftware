@@ -223,3 +223,10 @@
 2024-11-18 19:02:34.979 PST [27668] LOG:  checkpoint starting: shutdown immediate
 2024-11-18 19:02:34.985 PST [27668] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.008 s; sync files=3, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=197 kB; lsn=0/1A3C850, redo lsn=0/1A3C850
 2024-11-18 19:02:34.992 PST [38376] LOG:  database system is shut down
+2024-11-18 19:02:52.369 PST [36204] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-18 19:02:52.372 PST [36204] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-18 19:02:52.372 PST [36204] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-11-18 19:02:52.400 PST [31256] LOG:  database system was shut down at 2024-11-18 19:02:50 PST
+2024-11-18 19:02:52.414 PST [36204] LOG:  database system is ready to accept connections
+2024-11-18 19:07:52.409 PST [35060] LOG:  checkpoint starting: time
+2024-11-18 19:07:57.848 PST [35060] LOG:  checkpoint complete: wrote 53 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.428 s, sync=0.007 s, total=5.440 s; sync files=15, longest=0.001 s, average=0.001 s; distance=289 kB, estimate=289 kB; lsn=0/1A28178, redo lsn=0/1A28120
