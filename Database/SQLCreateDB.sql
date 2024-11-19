@@ -1,7 +1,7 @@
 CREATE TABLE telemetry (
     date_entry                      date,
     time_step                       time,
-    tire_temps                      float[4][1][1],
+    tire_temps                      float[4096],
     tire_pressures                  float[4],
     velocity                        float,
     location                        float[2],
@@ -20,6 +20,5 @@ CREATE TABLE telemetry (
     battery_voltage                 float,
     traction_loss                   float,
     abs_throttle_limiting           float[2],
-    limited_slip_usage              float[2],
-    log                             varchar[100]
+    limited_slip_usage              float[2]
 );
