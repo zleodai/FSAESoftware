@@ -13,12 +13,29 @@ import (
 )
 
 var (
-	speedData        []float64
-	steeringData     []float64
-	accelerationData []float64
-	speed            float64
-	steeringAngle    float64
-	acceleration     float64
+	throttleData    []float64 = make([]float64, 0, maxDataPoints)
+	brakeData       []float64
+	steeringData    []float64
+	xAccelData      []float64
+	yAccelData      []float64
+	zAccelData      []float64
+	tireTempData    []float64
+	tirePressureData []float64
+	pitchData       []float64
+	yawData         []float64
+	rollData        []float64
+
+	throttle      float64
+	brake         float64
+	steeringAngle float64
+	xAccel        float64
+	yAccel        float64
+	zAccel        float64
+	tireTemp      float64
+	tirePressure  float64
+	pitch         float64
+	yaw           float64
+	roll          float64
 )
 
 const (
@@ -31,53 +48,78 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Vehicle Telemetry Monitor")
 	w.Resize(fyne.NewSize(1080, 1920))
-	speedLabel := widget.NewLabel("Speed: 0")
-	speedGraph := container.NewWithoutLayout()
-	steeringLabel := widget.NewLabel("Steering Angle: 0")
-	steeringGraph := container.NewWithoutLayout()
-	accelLabel := widget.NewLabel("Acceleration: 0")
-	accelGraph := container.NewWithoutLayout()
-	updateTelemetryLabels := func() {
-		speedLabel.SetText("Speed: " + fmt.Sprintf("%.2f", speed))
-		steeringLabel.SetText("Steering Angle: " + fmt.Sprintf("%.2f", steeringAngle))
-		accelLabel.SetText("Acceleration: " + fmt.Sprintf("%.2f", acceleration))
-	}
 
-	// FOR TESTING WITH DUMMY DATA USING KEYBOARD INPUTS
-	//REMEMBER WHEN TAKING IN REAL INPUTS I WILL NEED TO
-	//CLAMP DATA IF IT GOES OFF GRAPH OR JUST ADJUST GRAPH
-	//BUT STILL CLAMP DATA JUST INCASE IDK
+	throttleLabel := widget.NewLabel("Throttle: 0%")
+	throttleGraph := container.NewWithoutLayout()
+	brakeLabel := widget.NewLabel("Brake: 0%")
+	brakeGraph := container.NewWithoutLayout()
+	steeringLabel := widget.NewLabel("Steering: 0°")
+	steeringGraph := container.NewWithoutLayout()
+
+	xAccelLabel := widget.NewLabel("X Acceleration: 0 m/s²")
+	xAccelGraph := container.NewWithoutLayout()
+	yAccelLabel := widget.NewLabel("Y Acceleration: 0 m/s²")
+	yAccelGraph := container.NewWithoutLayout()
+	zAccelLabel := widget.NewLabel("Z Acceleration: 0 m/s²")
+	zAccelGraph := container.NewWithoutLayout()
+
+	tireTempLabel := widget.NewLabel("Tire Temperature: 0°F")
+	tireTempGraph := container.NewWithoutLayout()
+	tirePressureLabel := widget.NewLabel("Tire Pressure: 0 psi")
+	tirePressureGraph := container.NewWithoutLayout()
+
+	pitchLabel := widget.NewLabel("Pitch: 0°")
+	pitchGraph := container.NewWithoutLayout()
+	yawLabel := widget.NewLabel("Yaw: 0°")
+	yawGraph := container.NewWithoutLayout()
+	rollLabel := widget.NewLabel("Roll: 0°")
+	rollGraph := container.NewWithoutLayout()
+
+	updateTelemetryLabels := func() {
+		throttleLabel.SetText("Throttle: " + fmt.Sprintf("%.2f", throttle) + "%")
+		brakeLabel.SetText("Brake: " + fmt.Sprintf("%.2f", brake) + "%")
+		steeringLabel.SetText("Steering: " + fmt.Sprintf("%.2f", steeringAngle) + "°")
+		xAccelLabel.SetText("X Acceleration: " + fmt.Sprintf("%.2f", xAccel) + " m/s²")
+		yAccelLabel.SetText("Y Acceleration: " + fmt.Sprintf("%.2f", yAccel) + " m/s²")
+		zAccelLabel.SetText("Z Acceleration: " + fmt.Sprintf("%.2f", zAccel) + " m/s²")
+		tireTempLabel.SetText("Tire Temperature: " + fmt.Sprintf("%.2f", tireTemp) + "°F")
+		tirePressureLabel.SetText("Tire Pressure: " + fmt.Sprintf("%.2f", tirePressure) + " psi")
+		pitchLabel.SetText("Pitch: " + fmt.Sprintf("%.2f", pitch) + "°")
+		yawLabel.SetText("Yaw: " + fmt.Sprintf("%.2f", yaw) + "°")
+		rollLabel.SetText("Roll: " + fmt.Sprintf("%.2f", roll) + "°")
+	}	
+
 	w.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
 		switch key.Name {
 		case fyne.KeyW:
-			speed += 5
-			if speed > 100 {
-				speed = 100
+			throttle += 5
+			if throttle > 100 {
+				throttle = 100
 			}
 		case fyne.KeyS:
-			speed -= 5
-			if speed < 0 {
-				speed = 0
+			throttle -= 5
+			if throttle < 0 {
+				throttle = 0
 			}
 		case fyne.KeyE:
-			steeringAngle += 5
-			if steeringAngle > 90 {
-				steeringAngle = 90
+			brake += 5
+			if brake > 100 {
+				brake = 100
 			}
 		case fyne.KeyD:
-			steeringAngle -= 5
-			if steeringAngle < -90 {
-				steeringAngle = -90
+			brake -= 5
+			if brake < 0 {
+				brake = 0
 			}
 		case fyne.KeyR:
-			acceleration += 1
-			if acceleration > 50 {
-				acceleration = 50
+			steeringAngle += 10
+			if steeringAngle > 180 {
+				steeringAngle = 180
 			}
 		case fyne.KeyF:
-			acceleration -= 1
-			if acceleration < -10 {
-				acceleration = -10
+			steeringAngle -= 10
+			if steeringAngle < -180 {
+				steeringAngle = -180
 			}
 		}
 		updateTelemetryLabels()
@@ -85,35 +127,112 @@ func main() {
 
 	go func() {
 		for range time.Tick(time.Millisecond * 20) {
-			updateData(&speedData, speed)
+			updateData(&throttleData, throttle)
+			updateData(&brakeData, brake)
 			updateData(&steeringData, steeringAngle)
-			updateData(&accelerationData, acceleration)
+			updateData(&xAccelData, xAccel)
+			updateData(&yAccelData, yAccel)
+			updateData(&zAccelData, zAccel)
+			updateData(&tireTempData, tireTemp)
+			updateData(&tirePressureData, tirePressure)
+			updateData(&pitchData, pitch)
+			updateData(&yawData, yaw)
+			updateData(&rollData, roll)
 
-			updateTelemetryLabels()
-			drawGraph(speedGraph, speedData, 100, 0)
-			drawGraph(steeringGraph, steeringData, 90, -90)
-			drawGraph(accelGraph, accelerationData, 50, -10)
+			drawGraph(throttleGraph, throttleData, 100, 0)
+			drawGraph(brakeGraph, brakeData, 100, 0)
+			drawGraph(steeringGraph, steeringData, 180, -180)
+			drawGraph(xAccelGraph, xAccelData, 30, -5)
+			drawGraph(yAccelGraph, yAccelData, 15, -15)
+			drawGraph(zAccelGraph, zAccelData, 10, -10)
+			drawGraph(tireTempGraph, tireTempData, 200, 0)
+			drawGraph(tirePressureGraph, tirePressureData, 50, 0)
+			drawGraph(pitchGraph, pitchData, 100, -100)
+			drawGraph(yawGraph, yawData, 100, -100)
+			drawGraph(rollGraph, rollData, 100, -100)
 		}
 	}()
 
-	content := container.NewVBox(
+	inputGraphs := container.NewVBox(
 		container.NewVBox(
-			speedLabel,
-			addGraphWithBackground(speedGraph, 100, 0),
-			widget.NewSeparator(),
+			throttleLabel,
+			addGraphWithBackground(throttleGraph, 100, 0),
+		),
+		container.NewVBox(
+			brakeLabel,
+			addGraphWithBackground(brakeGraph, 100, 0),
 		),
 		container.NewVBox(
 			steeringLabel,
-			addGraphWithBackground(steeringGraph, 90, -90),
-			widget.NewSeparator(),
-		),
-		container.NewVBox(
-			accelLabel,
-			addGraphWithBackground(accelGraph, 10, -10),
+			addGraphWithBackground(steeringGraph, 180, -180),
 		),
 	)
 
-	w.SetContent(content)
+	accelGraphs := container.NewVBox(
+		container.NewVBox(
+			xAccelLabel,
+			addGraphWithBackground(xAccelGraph, 30, -5),
+		),
+		container.NewVBox(
+			yAccelLabel,
+			addGraphWithBackground(yAccelGraph, 15, -15),
+		),
+		container.NewVBox(
+			zAccelLabel,
+			addGraphWithBackground(zAccelGraph, 10, -10),
+		),
+	)
+
+	tireGraphs := container.NewVBox(
+		container.NewVBox(
+			tireTempLabel,
+			addGraphWithBackground(tireTempGraph, 200, 0),
+		),
+		container.NewVBox(
+			tirePressureLabel,
+			addGraphWithBackground(tirePressureGraph, 50, 0),
+		),
+	)
+
+	gyroGraphs := container.NewVBox(
+		container.NewVBox(
+			pitchLabel,
+			addGraphWithBackground(pitchGraph, 100, -100),
+		),
+		container.NewVBox(
+			yawLabel,
+			addGraphWithBackground(yawGraph, 100, -100),
+		),
+		container.NewVBox(
+			rollLabel,
+			addGraphWithBackground(rollGraph, 100, -100),
+		),
+	)
+
+	content := container.NewVBox()
+	buttons := container.NewHBox(
+		widget.NewButton("Inputs", func() {
+			content.Objects = []fyne.CanvasObject{inputGraphs}
+			content.Refresh()
+		}),
+		widget.NewButton("Acceleration", func() {
+			content.Objects = []fyne.CanvasObject{accelGraphs}
+			content.Refresh()
+		}),
+		widget.NewButton("Tires", func() {
+			content.Objects = []fyne.CanvasObject{tireGraphs}
+			content.Refresh()
+		}),
+		widget.NewButton("Gyro", func() {
+			content.Objects = []fyne.CanvasObject{gyroGraphs}
+			content.Refresh()
+		}),
+	)
+
+	content.Add(inputGraphs)
+	mainContent := container.NewVBox(buttons, content)
+
+	w.SetContent(mainContent)
 	w.ShowAndRun()
 }
 
@@ -126,7 +245,7 @@ func updateData(data *[]float64, value float64) {
 
 func drawGraph(container *fyne.Container, data []float64, maxScale, minScale float64) {
 	container.Objects = nil
-	graphColor := color.RGBA{R: 255, G: 0, B: 0, A: 255} //graph line color set here
+	graphColor := color.RGBA{R: 255, G: 0, B: 0, A: 255}
 	for i := 1; i < len(data); i++ {
 		x1 := float64(i-1) * graphWidth / maxDataPoints
 		y1 := graphHeight - (data[i-1]-minScale)/(maxScale-minScale)*graphHeight
@@ -151,7 +270,7 @@ func addGraphWithBackground(graph *fyne.Container, maxScale, minScale float64) *
 		line.Position1 = fyne.NewPos(0, y)
 		line.Position2 = fyne.NewPos(float32(graphWidth), y)
 		valueMarkers.Add(line)
-		label := canvas.NewText(fmt.Sprintf("%.0f", minScale+(maxScale-minScale)*float64(i)/5), color.RGBA{R: 255, G: 0, B: 0, A: 255}) //marker text color set here
+		label := canvas.NewText(fmt.Sprintf("%.0f", minScale+(maxScale-minScale)*float64(i)/5), color.RGBA{R: 255, G: 0, B: 0, A: 255})
 		label.TextSize = 10
 		label.Move(fyne.NewPos(5, y-7))
 		valueMarkers.Add(label)
