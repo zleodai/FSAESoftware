@@ -39,7 +39,7 @@ type TelemetryPacket struct {
 	limited_slip_usage           [2]float64
 }
 
-func TempTelemtryPacket() TelemetryPacket {
+func TempTelemetryPacket() TelemetryPacket {
 	var packet TelemetryPacket = TelemetryPacket{
 		tire_temps:                   [4096]float64{},
 		tire_pressures:               [4]float64{rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25},
@@ -231,7 +231,7 @@ func main() {
 
 	var testData []TelemetryPacket
 	for i := 0; i < 100; i++ {
-		testData = append(testData, TempTelemtryPacket())
+		testData = append(testData, TempTelemetryPacket())
 	}
 	InsertIntoPool(dbpool, testData)
 

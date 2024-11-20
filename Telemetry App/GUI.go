@@ -21,8 +21,8 @@ var (
 	xAccelData       []float64
 	yAccelData       []float64
 	zAccelData       []float64
-	tireTempData     []float64
-	tirePressureData []float64
+	tireTempData     [4][]float64
+	tirePressureData [4][]float64
 	pitchData        []float64
 	yawData          []float64
 	rollData         []float64
@@ -33,8 +33,8 @@ var (
 	xAccel        float64
 	yAccel        float64
 	zAccel        float64
-	tireTemp      float64
-	tirePressure  float64
+	tireTemp      [4]float64
+	tirePressure  [4]float64
 	pitch         float64
 	yaw           float64
 	roll          float64
@@ -48,7 +48,6 @@ const (
 
 func main() {
 	connection := databaseAPI.NewConnection()
-	databaseAPI.InsertIntoPool(connection, []databaseAPI.TelemetryPacket{databaseAPI.TempTelemtryPacket()})
 
 	a := app.New()
 	w := a.NewWindow("Vehicle Telemetry Monitor")
@@ -87,12 +86,22 @@ func main() {
 		xAccelLabel.SetText("X Acceleration: " + fmt.Sprintf("%.2f", xAccel) + " m/s²")
 		yAccelLabel.SetText("Y Acceleration: " + fmt.Sprintf("%.2f", yAccel) + " m/s²")
 		zAccelLabel.SetText("Z Acceleration: " + fmt.Sprintf("%.2f", zAccel) + " m/s²")
-		tireTempLabel.SetText("Tire Temperature: " + fmt.Sprintf("%.2f", tireTemp) + "°F")
-		tirePressureLabel.SetText("Tire Pressure: " + fmt.Sprintf("%.2f", tirePressure) + " psi")
+		tireTempLabel.SetText("Tire Temperature: " + fmt.Sprintf("%.2f", tireTemp[0]) + "°F")
+		tirePressureLabel.SetText("Tire Pressure: " + fmt.Sprintf("%.2f", tirePressure[0]) + " psi")
 		pitchLabel.SetText("Pitch: " + fmt.Sprintf("%.2f", pitch) + "°")
 		yawLabel.SetText("Yaw: " + fmt.Sprintf("%.2f", yaw) + "°")
 		rollLabel.SetText("Roll: " + fmt.Sprintf("%.2f", roll) + "°")
 	}
+
+	legend := createLegend([]struct {
+		name  string
+		color color.RGBA
+	}{
+		{"Front Left", color.RGBA{R: 255, G: 0, B: 0, A: 255}},   // Red
+		{"Front Right", color.RGBA{R: 0, G: 255, B: 0, A: 255}},  // Green
+		{"Rear Left", color.RGBA{R: 0, G: 0, B: 255, A: 255}},    // Blue
+		{"Rear Right", color.RGBA{R: 255, G: 255, B: 0, A: 255}}, // Yellow
+	})
 
 	w.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
 		switch key.Name {
@@ -132,14 +141,24 @@ func main() {
 
 	go func() {
 		for range time.Tick(time.Millisecond * 20) {
+			//For testing with dummy data
+			var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
+			throttle = packet.Accelerator_Input
+
 			updateData(&throttleData, throttle)
 			updateData(&brakeData, brake)
 			updateData(&steeringData, steeringAngle)
 			updateData(&xAccelData, xAccel)
 			updateData(&yAccelData, yAccel)
 			updateData(&zAccelData, zAccel)
-			updateData(&tireTempData, tireTemp)
-			updateData(&tirePressureData, tirePressure)
+			updateData(&tireTempData[0], tireTemp[0])
+			updateData(&tirePressureData[0], tirePressure[0])
+			updateData(&tireTempData[1], tireTemp[1])
+			updateData(&tirePressureData[1], tirePressure[1])
+			updateData(&tireTempData[2], tireTemp[2])
+			updateData(&tirePressureData[2], tirePressure[2])
+			updateData(&tireTempData[3], tireTemp[3])
+			updateData(&tirePressureData[3], tirePressure[3])
 			updateData(&pitchData, pitch)
 			updateData(&yawData, yaw)
 			updateData(&rollData, roll)
@@ -150,8 +169,18 @@ func main() {
 			drawGraph(xAccelGraph, xAccelData, 30, -5)
 			drawGraph(yAccelGraph, yAccelData, 15, -15)
 			drawGraph(zAccelGraph, zAccelData, 10, -10)
-			drawGraph(tireTempGraph, tireTempData, 200, 0)
-			drawGraph(tirePressureGraph, tirePressureData, 50, 0)
+			drawMultiLineGraph(tireTempGraph, tireTempData, 200, 0, []color.RGBA{
+				{R: 255, G: 0, B: 0, A: 255},
+				{R: 0, G: 255, B: 0, A: 255},
+				{R: 0, G: 0, B: 255, A: 255},
+				{R: 255, G: 255, B: 0, A: 255},
+			})
+			drawMultiLineGraph(tirePressureGraph, tirePressureData, 50, 0, []color.RGBA{
+				{R: 255, G: 0, B: 0, A: 255},
+				{R: 0, G: 255, B: 0, A: 255},
+				{R: 0, G: 0, B: 255, A: 255},
+				{R: 255, G: 255, B: 0, A: 255},
+			})
 			drawGraph(pitchGraph, pitchData, 100, -100)
 			drawGraph(yawGraph, yawData, 100, -100)
 			drawGraph(rollGraph, rollData, 100, -100)
@@ -197,6 +226,7 @@ func main() {
 			tirePressureLabel,
 			addGraphWithBackground(tirePressureGraph, 50, 0),
 		),
+		legend,
 	)
 
 	gyroGraphs := container.NewVBox(
@@ -265,6 +295,25 @@ func drawGraph(container *fyne.Container, data []float64, maxScale, minScale flo
 	container.Refresh()
 }
 
+func drawMultiLineGraph(container *fyne.Container, data [4][]float64, maxScale, minScale float64, colors []color.RGBA) {
+	container.Objects = nil
+	for i, lineData := range data {
+		graphColor := colors[i]
+		for j := 1; j < len(lineData); j++ {
+			x1 := float64(j-1) * graphWidth / maxDataPoints
+			y1 := graphHeight - (lineData[j-1]-minScale)/(maxScale-minScale)*graphHeight
+			x2 := float64(j) * graphWidth / maxDataPoints
+			y2 := graphHeight - (lineData[j]-minScale)/(maxScale-minScale)*graphHeight
+			line := canvas.NewLine(graphColor)
+			line.StrokeWidth = 2
+			line.Position1 = fyne.NewPos(float32(x1), float32(y1))
+			line.Position2 = fyne.NewPos(float32(x2), float32(y2))
+			container.Add(line)
+		}
+	}
+	container.Refresh()
+}
+
 func addGraphWithBackground(graph *fyne.Container, maxScale, minScale float64) *fyne.Container {
 	bg := canvas.NewRectangle(color.RGBA{R: 220, G: 220, B: 220, A: 255})
 	bg.Resize(fyne.NewSize(graphWidth, graphHeight))
@@ -288,4 +337,18 @@ func addGraphWithBackground(graph *fyne.Container, maxScale, minScale float64) *
 		widget.NewLabel(" "),
 	)
 	return paddedGraph
+}
+
+func createLegend(items []struct {
+	name  string
+	color color.RGBA
+}) *fyne.Container {
+	legendItems := container.NewVBox()
+	for _, item := range items {
+		colorRect := canvas.NewRectangle(item.color)
+		colorRect.SetMinSize(fyne.NewSize(20, 20))
+		label := widget.NewLabel(item.name)
+		legendItems.Add(container.NewHBox(colorRect, label))
+	}
+	return legendItems
 }
