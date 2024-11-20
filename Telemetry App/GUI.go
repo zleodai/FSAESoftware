@@ -5,6 +5,8 @@ import (
 	"image/color"
 	"time"
 
+	"databaseAPI"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
@@ -13,17 +15,17 @@ import (
 )
 
 var (
-	throttleData    []float64 = make([]float64, 0, maxDataPoints)
-	brakeData       []float64
-	steeringData    []float64
-	xAccelData      []float64
-	yAccelData      []float64
-	zAccelData      []float64
-	tireTempData    []float64
+	throttleData     []float64 = make([]float64, 0, maxDataPoints)
+	brakeData        []float64
+	steeringData     []float64
+	xAccelData       []float64
+	yAccelData       []float64
+	zAccelData       []float64
+	tireTempData     []float64
 	tirePressureData []float64
-	pitchData       []float64
-	yawData         []float64
-	rollData        []float64
+	pitchData        []float64
+	yawData          []float64
+	rollData         []float64
 
 	throttle      float64
 	brake         float64
@@ -45,6 +47,9 @@ const (
 )
 
 func main() {
+	connection := databaseAPI.NewConnection()
+	databaseAPI.InsertIntoPool(connection, []databaseAPI.TelemetryPacket{databaseAPI.TempTelemtryPacket()})
+
 	a := app.New()
 	w := a.NewWindow("Vehicle Telemetry Monitor")
 	w.Resize(fyne.NewSize(1080, 1920))
@@ -87,7 +92,7 @@ func main() {
 		pitchLabel.SetText("Pitch: " + fmt.Sprintf("%.2f", pitch) + "°")
 		yawLabel.SetText("Yaw: " + fmt.Sprintf("%.2f", yaw) + "°")
 		rollLabel.SetText("Roll: " + fmt.Sprintf("%.2f", roll) + "°")
-	}	
+	}
 
 	w.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
 		switch key.Name {
