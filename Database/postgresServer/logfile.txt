@@ -1,48 +1,12 @@
-2024-11-19 04:49:13.407 PST [77348] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
-2024-11-19 04:49:13.410 PST [77348] LOG:  listening on IPv6 address "::1", port 5432
-2024-11-19 04:49:13.410 PST [77348] LOG:  listening on IPv4 address "127.0.0.1", port 5432
-2024-11-19 04:49:13.426 PST [83452] LOG:  database system was shut down at 2024-11-19 04:49:11 PST
-2024-11-19 04:49:13.434 PST [77348] LOG:  database system is ready to accept connections
-2024-11-19 04:49:13.749 PST [77348] LOG:  received fast shutdown request
-2024-11-19 04:49:13.750 PST [77348] LOG:  aborting any active transactions
-2024-11-19 04:49:13.752 PST [77348] LOG:  background worker "logical replication launcher" (PID 83104) exited with exit code 1
-2024-11-19 04:49:13.753 PST [74320] LOG:  shutting down
-2024-11-19 04:49:13.753 PST [74320] LOG:  checkpoint starting: shutdown immediate
-2024-11-19 04:49:13.865 PST [74320] LOG:  checkpoint complete: wrote 973 buffers (5.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.040 s, sync=0.070 s, total=0.112 s; sync files=311, longest=0.001 s, average=0.001 s; distance=4542 kB, estimate=4542 kB; lsn=0/19D7D90, redo lsn=0/19D7D90
-2024-11-19 04:49:13.893 PST [77348] LOG:  database system is shut down
-2024-11-19 04:49:20.409 PST [45252] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
-2024-11-19 04:49:20.411 PST [45252] LOG:  listening on IPv6 address "::1", port 5432
-2024-11-19 04:49:20.411 PST [45252] LOG:  listening on IPv4 address "127.0.0.1", port 5432
-2024-11-19 04:49:20.427 PST [77472] LOG:  database system was shut down at 2024-11-19 04:49:13 PST
-2024-11-19 04:49:20.436 PST [45252] LOG:  database system is ready to accept connections
-2024-11-19 04:49:22.612 PST [84552] ERROR:  INSERT has more expressions than target columns at character 485
-2024-11-19 04:49:22.612 PST [84552] STATEMENT:  insert into telemetry (date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage) values (CURRENT_DATE, NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
-2024-11-19 04:49:22.614 PST [84552] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:49:35.755 PST [84184] ERROR:  column "traction_lost" does not exist at character 291
-2024-11-19 04:49:35.755 PST [84184] HINT:  Perhaps you meant to reference the column "telemetry.traction_loss".
-2024-11-19 04:49:35.755 PST [84184] STATEMENT:  select date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_lost, abs_throttle_limiting, limited_slip_usage from telemetry
-2024-11-19 04:49:35.757 PST [84184] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:03.928 PST [85756] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:13.807 PST [85684] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:15.747 PST [84872] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:17.246 PST [86452] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:26.026 PST [82296] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:47.500 PST [85384] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:50:49.324 PST [85320] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:51:32.870 PST [88780] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:51:35.303 PST [87244] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
-	
-2024-11-19 04:52:26.061 PST [45252] LOG:  background worker "logical replication launcher" (PID 83080) was terminated by exception 0xC000013A
-2024-11-19 04:52:26.061 PST [45252] HINT:  See C include file "ntstatus.h" for a description of the hexadecimal value.
-2024-11-19 04:52:26.061 PST [45252] LOG:  terminating any other active server processes
-2024-11-19 04:52:26.062 PST [45252] LOG:  received fast shutdown request
+2024-11-19 16:51:16.534 PST [96132] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-11-19 16:51:16.536 PST [96132] LOG:  listening on IPv6 address "::1", port 5432
+2024-11-19 16:51:16.536 PST [96132] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-11-19 16:51:16.553 PST [93524] LOG:  database system was shut down at 2024-11-19 16:41:39 PST
+2024-11-19 16:51:16.562 PST [96132] LOG:  database system is ready to accept connections
+2024-11-19 16:51:16.899 PST [96132] LOG:  received fast shutdown request
+2024-11-19 16:51:16.900 PST [96132] LOG:  aborting any active transactions
+2024-11-19 16:51:16.902 PST [96132] LOG:  background worker "logical replication launcher" (PID 97480) exited with exit code 1
+2024-11-19 16:51:16.902 PST [96064] LOG:  shutting down
+2024-11-19 16:51:16.903 PST [96064] LOG:  checkpoint starting: shutdown immediate
+2024-11-19 16:51:17.035 PST [96064] LOG:  checkpoint complete: wrote 973 buffers (5.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.045 s, sync=0.085 s, total=0.133 s; sync files=311, longest=0.001 s, average=0.001 s; distance=4542 kB, estimate=4542 kB; lsn=0/19D7EA0, redo lsn=0/19D7EA0
+2024-11-19 16:51:17.067 PST [96132] LOG:  database system is shut down
