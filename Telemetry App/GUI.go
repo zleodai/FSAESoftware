@@ -47,7 +47,7 @@ const (
 )
 
 func main() {
-	connection := databaseAPI.NewConnection()
+	//connection := databaseAPI.NewConnection()
 
 	a := app.New()
 	w := a.NewWindow("Vehicle Telemetry Monitor")
@@ -143,7 +143,9 @@ func main() {
 		for range time.Tick(time.Millisecond * 20) {
 			//For testing with dummy data
 			var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
-			throttle = packet.Accelerator_input
+			throttle = packet.Accelerator_input * 100
+			
+			updateTelemetryLabels()
 
 			updateData(&throttleData, throttle)
 			updateData(&brakeData, brake)
