@@ -143,7 +143,7 @@ func main() {
 		for range time.Tick(time.Millisecond * 20) {
 			//For testing with dummy data
 			var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
-			throttle = packet.Accelerator_Input
+			throttle = packet.Accelerator_input
 
 			updateData(&throttleData, throttle)
 			updateData(&brakeData, brake)

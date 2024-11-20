@@ -14,57 +14,57 @@ import (
 )
 
 type TelemetryPacket struct {
-	id                           int64
-	date_entry                   time.Time
-	time_step                    time.Time
-	tire_temps                   [4096]float64
-	tire_pressures               [4]float64
-	velocity                     float64
-	location                     [2]float64
-	accelerator_input            float64
-	brake_input                  float64
-	steering_angle               float64
-	gyro_pitch                   float64
-	gyro_yaw                     float64
-	gyro_roll                    float64
-	x_acceleration               float64
-	y_acceleration               float64
-	z_acceleration               float64
-	total_power_draw             float64
-	active_suspension_power_draw [4]float64
-	motor_power_draw             [2]float64
-	battery_voltage              float64
-	traction_loss                float64
-	abs_throttle_limiting        [2]float64
-	limited_slip_usage           [2]float64
+	Id                           int64
+	Date_entry                   time.Time
+	Time_step                    time.Time
+	Tire_temps                   [4096]float64
+	Tire_pressures               [4]float64
+	Velocity                     float64
+	Location                     [2]float64
+	Accelerator_input            float64
+	Brake_input                  float64
+	Steering_angle               float64
+	Gyro_pitch                   float64
+	Gyro_yaw                     float64
+	Gyro_roll                    float64
+	X_acceleration               float64
+	Y_acceleration               float64
+	Z_acceleration               float64
+	Total_power_draw             float64
+	Active_suspension_power_draw [4]float64
+	Motor_power_draw             [2]float64
+	Battery_voltage              float64
+	Traction_loss                float64
+	Abs_throttle_limiting        [2]float64
+	Limited_slip_usage           [2]float64
 }
 
 func TempTelemetryPacket() TelemetryPacket {
 	var packet TelemetryPacket = TelemetryPacket{
-		tire_temps:                   [4096]float64{},
-		tire_pressures:               [4]float64{rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25},
-		velocity:                     rand.Float64() * 100,
-		location:                     [2]float64{rand.Float64(), rand.Float64()},
-		accelerator_input:            rand.Float64(),
-		brake_input:                  rand.Float64(),
-		steering_angle:               rand.Float64(),
-		gyro_pitch:                   rand.Float64(),
-		gyro_yaw:                     rand.Float64(),
-		gyro_roll:                    rand.Float64(),
-		x_acceleration:               rand.Float64(),
-		y_acceleration:               rand.Float64(),
-		z_acceleration:               rand.Float64(),
-		total_power_draw:             rand.Float64(),
-		active_suspension_power_draw: [4]float64{rand.Float64(), rand.Float64(), rand.Float64(), rand.Float64()},
-		motor_power_draw:             [2]float64{rand.Float64()},
-		battery_voltage:              rand.Float64(),
-		traction_loss:                rand.Float64(),
-		abs_throttle_limiting:        [2]float64{rand.Float64(), rand.Float64()},
-		limited_slip_usage:           [2]float64{rand.Float64(), rand.Float64()},
+		Tire_temps:                   [4096]float64{},
+		Tire_pressures:               [4]float64{rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25},
+		Velocity:                     rand.Float64() * 100,
+		Location:                     [2]float64{rand.Float64(), rand.Float64()},
+		Accelerator_input:            rand.Float64(),
+		Brake_input:                  rand.Float64(),
+		Steering_angle:               rand.Float64(),
+		Gyro_pitch:                   rand.Float64(),
+		Gyro_yaw:                     rand.Float64(),
+		Gyro_roll:                    rand.Float64(),
+		X_acceleration:               rand.Float64(),
+		Y_acceleration:               rand.Float64(),
+		Z_acceleration:               rand.Float64(),
+		Total_power_draw:             rand.Float64(),
+		Active_suspension_power_draw: [4]float64{rand.Float64(), rand.Float64(), rand.Float64(), rand.Float64()},
+		Motor_power_draw:             [2]float64{rand.Float64()},
+		Battery_voltage:              rand.Float64(),
+		Traction_loss:                rand.Float64(),
+		Abs_throttle_limiting:        [2]float64{rand.Float64(), rand.Float64()},
+		Limited_slip_usage:           [2]float64{rand.Float64(), rand.Float64()},
 	}
 
 	for i := 0; i < 4096; i++ {
-		packet.tire_temps[i] = 1
+		packet.Tire_temps[i] = 1
 	}
 
 	return packet
@@ -78,7 +78,7 @@ func getLargestId(dbpool *pgxpool.Pool) int64 {
 		var newLargestID int64 = 0
 		var existingData = QueryFromPool(dbpool)
 		for _, packet := range *existingData {
-			newLargestID = int64(math.Max(float64(newLargestID), float64(packet.id)))
+			newLargestID = int64(math.Max(float64(newLargestID), float64(packet.Id)))
 		}
 
 		LargestID = newLargestID
@@ -91,7 +91,7 @@ func getLatestId(dbpool *pgxpool.Pool) int64 {
 	var latestID int64 = 0
 	var existingData = QueryFromPool(dbpool)
 	for _, packet := range *existingData {
-		latestID = int64(math.Max(float64(latestID), float64(packet.id)))
+		latestID = int64(math.Max(float64(latestID), float64(packet.Id)))
 	}
 
 	return int64(latestID)
@@ -115,63 +115,63 @@ func CloseConnection(dbpool *pgxpool.Pool) {
 func InsertIntoPool(dbpool *pgxpool.Pool, data []TelemetryPacket) {
 	for _, packet := range data {
 		var tireTemps = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.tire_temps)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.tire_temps)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Tire_temps)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Tire_temps)), LowerBound: 1}},
 		}
-		for i, v := range packet.tire_temps {
+		for i, v := range packet.Tire_temps {
 			tireTemps.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var tirePressures = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.tire_pressures)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.tire_pressures)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Tire_pressures)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Tire_pressures)), LowerBound: 1}},
 		}
-		for i, v := range packet.tire_pressures {
+		for i, v := range packet.Tire_pressures {
 			tirePressures.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var location = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.location)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.location)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Location)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Location)), LowerBound: 1}},
 		}
-		for i, v := range packet.location {
+		for i, v := range packet.Location {
 			location.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var activeSuspensionPowerDraw = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.active_suspension_power_draw)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.active_suspension_power_draw)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Active_suspension_power_draw)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Active_suspension_power_draw)), LowerBound: 1}},
 		}
-		for i, v := range packet.active_suspension_power_draw {
+		for i, v := range packet.Active_suspension_power_draw {
 			activeSuspensionPowerDraw.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var motorPowerDraw = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.motor_power_draw)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.motor_power_draw)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Motor_power_draw)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Motor_power_draw)), LowerBound: 1}},
 		}
-		for i, v := range packet.motor_power_draw {
+		for i, v := range packet.Motor_power_draw {
 			motorPowerDraw.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var absThrottleLimiting = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.abs_throttle_limiting)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.abs_throttle_limiting)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Abs_throttle_limiting)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Abs_throttle_limiting)), LowerBound: 1}},
 		}
-		for i, v := range packet.abs_throttle_limiting {
+		for i, v := range packet.Abs_throttle_limiting {
 			absThrottleLimiting.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var limitedSplitUsage = pgtype.Array[pgtype.Float8]{
-			Elements: make([]pgtype.Float8, len(packet.limited_slip_usage)),
-			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.limited_slip_usage)), LowerBound: 1}},
+			Elements: make([]pgtype.Float8, len(packet.Limited_slip_usage)),
+			Dims:     []pgtype.ArrayDimension{{Length: int32(len(packet.Limited_slip_usage)), LowerBound: 1}},
 		}
-		for i, v := range packet.limited_slip_usage {
+		for i, v := range packet.Limited_slip_usage {
 			limitedSplitUsage.Elements[i] = pgtype.Float8{Float64: v, Valid: true}
 		}
 
 		var id = getLargestId(dbpool)
-		_, err := dbpool.Exec(context.Background(), "insert into telemetry (id, date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage) values ($1, CURRENT_DATE, NOW(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)", id, tireTemps, tirePressures, packet.velocity, location, packet.accelerator_input, packet.brake_input, packet.steering_angle, packet.gyro_pitch, packet.gyro_yaw, packet.gyro_roll, packet.x_acceleration, packet.y_acceleration, packet.z_acceleration, packet.total_power_draw, activeSuspensionPowerDraw, motorPowerDraw, packet.battery_voltage, packet.traction_loss, absThrottleLimiting, limitedSplitUsage)
+		_, err := dbpool.Exec(context.Background(), "insert into telemetry (id, date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage) values ($1, CURRENT_DATE, NOW(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)", id, tireTemps, tirePressures, packet.Velocity, location, packet.Accelerator_input, packet.Brake_input, packet.Steering_angle, packet.Gyro_pitch, packet.Gyro_yaw, packet.Gyro_roll, packet.X_acceleration, packet.Y_acceleration, packet.Z_acceleration, packet.Total_power_draw, activeSuspensionPowerDraw, motorPowerDraw, packet.Battery_voltage, packet.Traction_loss, absThrottleLimiting, limitedSplitUsage)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Insertion failed: %v\n", err)
 			os.Exit(1)
@@ -190,7 +190,7 @@ func QueryFromPool(dbpool *pgxpool.Pool) *[]TelemetryPacket {
 
 	for rows.Next() {
 		var packet TelemetryPacket
-		err = rows.Scan(&packet.id, &packet.date_entry, &packet.time_step, &packet.tire_temps, &packet.tire_pressures, &packet.velocity, &packet.location, &packet.accelerator_input, &packet.brake_input, &packet.steering_angle, &packet.gyro_pitch, &packet.gyro_yaw, &packet.gyro_roll, &packet.x_acceleration, &packet.y_acceleration, &packet.z_acceleration, &packet.total_power_draw, &packet.active_suspension_power_draw, &packet.motor_power_draw, &packet.battery_voltage, &packet.traction_loss, &packet.abs_throttle_limiting, &packet.limited_slip_usage)
+		err = rows.Scan(&packet.Id, &packet.Date_entry, &packet.Time_step, &packet.Tire_temps, &packet.Tire_pressures, &packet.Velocity, &packet.Location, &packet.Accelerator_input, &packet.Brake_input, &packet.Steering_angle, &packet.Gyro_pitch, &packet.Gyro_yaw, &packet.Gyro_roll, &packet.X_acceleration, &packet.Y_acceleration, &packet.Z_acceleration, &packet.Total_power_draw, &packet.Active_suspension_power_draw, &packet.Motor_power_draw, &packet.Battery_voltage, &packet.Traction_loss, &packet.Abs_throttle_limiting, &packet.Limited_slip_usage)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 			os.Exit(1)
@@ -214,13 +214,13 @@ func QueryLatestFromPool(dbpool *pgxpool.Pool) *[]TelemetryPacket {
 
 	for rows.Next() {
 		var packet TelemetryPacket
-		err = rows.Scan(&packet.id, &packet.date_entry, &packet.time_step, &packet.tire_temps, &packet.tire_pressures, &packet.velocity, &packet.location, &packet.accelerator_input, &packet.brake_input, &packet.steering_angle, &packet.gyro_pitch, &packet.gyro_yaw, &packet.gyro_roll, &packet.x_acceleration, &packet.y_acceleration, &packet.z_acceleration, &packet.total_power_draw, &packet.active_suspension_power_draw, &packet.motor_power_draw, &packet.battery_voltage, &packet.traction_loss, &packet.abs_throttle_limiting, &packet.limited_slip_usage)
+		err = rows.Scan(&packet.Id, &packet.Date_entry, &packet.Time_step, &packet.Tire_temps, &packet.Tire_pressures, &packet.Velocity, &packet.Location, &packet.Accelerator_input, &packet.Brake_input, &packet.Steering_angle, &packet.Gyro_pitch, &packet.Gyro_yaw, &packet.Gyro_roll, &packet.X_acceleration, &packet.Y_acceleration, &packet.Z_acceleration, &packet.Total_power_draw, &packet.Active_suspension_power_draw, &packet.Motor_power_draw, &packet.Battery_voltage, &packet.Traction_loss, &packet.Abs_throttle_limiting, &packet.Limited_slip_usage)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 			os.Exit(1)
 		}
 		data = append(data, packet)
-		LatestID = int64(math.Max(float64(packet.id), float64(LatestID)))
+		LatestID = int64(math.Max(float64(packet.Id), float64(LatestID)))
 	}
 
 	return &data
@@ -239,14 +239,14 @@ func main() {
 
 	println("\nGot Data:")
 	for _, packet := range *data {
-		fmt.Printf("%d, ", packet.id)
+		fmt.Printf("%d, ", packet.Id)
 	}
 
 	var latestData = QueryLatestFromPool(dbpool)
 
 	println("\nGot Latest Data:")
 	for _, packet := range *latestData {
-		fmt.Printf("%d, ", packet.id)
+		fmt.Printf("%d, ", packet.Id)
 	}
 
 	CloseConnection(dbpool)
