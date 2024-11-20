@@ -1,8 +1,9 @@
 CREATE TABLE telemetry (
     id                              int8,
+    lap_id                          int8,
     date_entry                      date,
     time_step                       time,
-    tire_temps                      float[4096],
+    tire_temps                      float[4],
     tire_pressures                  float[4],
     velocity                        float,
     location                        float[2],
