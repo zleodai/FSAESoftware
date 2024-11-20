@@ -17,7 +17,7 @@ type TelemetryPacket struct {
 	Id                           int64
 	Date_entry                   time.Time
 	Time_step                    time.Time
-	Tire_temps                   [4096]float64
+	Tire_temps                   [4]float64
 	Tire_pressures               [4]float64
 	Velocity                     float64
 	Location                     [2]float64
@@ -41,7 +41,7 @@ type TelemetryPacket struct {
 
 func TempTelemetryPacket() TelemetryPacket {
 	var packet TelemetryPacket = TelemetryPacket{
-		Tire_temps:                   [4096]float64{},
+		Tire_temps:                   [4]float64{rand.Float64()*80 + 15, rand.Float64()*80 + 15, rand.Float64()*80 + 15, rand.Float64()*80 + 15},
 		Tire_pressures:               [4]float64{rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25, rand.Float64()*5 + 25},
 		Velocity:                     rand.Float64() * 100,
 		Location:                     [2]float64{rand.Float64(), rand.Float64()},
@@ -62,11 +62,6 @@ func TempTelemetryPacket() TelemetryPacket {
 		Abs_throttle_limiting:        [2]float64{rand.Float64(), rand.Float64()},
 		Limited_slip_usage:           [2]float64{rand.Float64(), rand.Float64()},
 	}
-
-	for i := 0; i < 4096; i++ {
-		packet.Tire_temps[i] = 1
-	}
-
 	return packet
 }
 
