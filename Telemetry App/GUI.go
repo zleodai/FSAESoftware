@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"time"
 
-	"databaseAPI"
+	//"databaseAPI"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -142,8 +142,8 @@ func main() {
 	go func() {
 		for range time.Tick(time.Millisecond * 20) {
 			//For testing with dummy data
-			var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
-			throttle = packet.Accelerator_input * 100
+			//var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
+			//throttle = packet.Accelerator_input * 100
 			
 			updateTelemetryLabels()
 
