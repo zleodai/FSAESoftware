@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	//"databaseAPI"
+	"databaseAPI"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -49,7 +49,7 @@ const (
 )
 
 func main() {
-	//connection := databaseAPI.NewConnection()
+	connection := databaseAPI.NewConnection()
 
 	a := app.New()
 	w := a.NewWindow("Vehicle Telemetry Monitor")
@@ -93,6 +93,26 @@ func main() {
 		pitchLabel.SetText("Pitch: " + fmt.Sprintf("%.2f", pitch) + "°")
 		yawLabel.SetText("Yaw: " + fmt.Sprintf("%.2f", yaw) + "°")
 		rollLabel.SetText("Roll: " + fmt.Sprintf("%.2f", roll) + "°")
+	}
+
+	updateData := func() {
+		updateData(&throttleData, throttle)
+		updateData(&brakeData, brake)
+		updateData(&steeringData, steeringAngle)
+		updateData(&xAccelData, xAccel)
+		updateData(&yAccelData, yAccel)
+		updateData(&zAccelData, zAccel)
+		updateData(&tireTempData[0], tireTemp[0])
+		updateData(&tirePressureData[0], tirePressure[0])
+		updateData(&tireTempData[1], tireTemp[1])
+		updateData(&tirePressureData[1], tirePressure[1])
+		updateData(&tireTempData[2], tireTemp[2])
+		updateData(&tirePressureData[2], tirePressure[2])
+		updateData(&tireTempData[3], tireTemp[3])
+		updateData(&tirePressureData[3], tirePressure[3])
+		updateData(&pitchData, pitch)
+		updateData(&yawData, yaw)
+		updateData(&rollData, roll)
 	}
 
 	legend := createLegend([]struct {
@@ -144,28 +164,16 @@ func main() {
 	go func() {
 		for range time.Tick(time.Millisecond * 20) {
 			//For testing with dummy data
-			//var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
-			//throttle = packet.Accelerator_input * 100
+			var packets []databaseAPI.TelemetryPacket = *databaseAPI.QueryLatestFromPool(connection)
+			if len(packets) > 0 {
+				var firstPacket = packets[0]
+				throttle = firstPacket.Accelerator_input * 100
+				brake = firstPacket.Brake_input * 100
+				steeringAngle = firstPacket.Steering_angle
+			}
 
 			updateTelemetryLabels()
-
-			updateData(&throttleData, throttle)
-			updateData(&brakeData, brake)
-			updateData(&steeringData, steeringAngle)
-			updateData(&xAccelData, xAccel)
-			updateData(&yAccelData, yAccel)
-			updateData(&zAccelData, zAccel)
-			updateData(&tireTempData[0], tireTemp[0])
-			updateData(&tirePressureData[0], tirePressure[0])
-			updateData(&tireTempData[1], tireTemp[1])
-			updateData(&tirePressureData[1], tirePressure[1])
-			updateData(&tireTempData[2], tireTemp[2])
-			updateData(&tirePressureData[2], tirePressure[2])
-			updateData(&tireTempData[3], tireTemp[3])
-			updateData(&tirePressureData[3], tirePressure[3])
-			updateData(&pitchData, pitch)
-			updateData(&yawData, yaw)
-			updateData(&rollData, roll)
+			updateData()
 
 			drawGraph(throttleGraph, throttleData, 100, 0)
 			drawGraph(brakeGraph, brakeData, 100, 0)
