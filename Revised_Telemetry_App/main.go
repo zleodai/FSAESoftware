@@ -18,6 +18,7 @@ import (
 
 var (
 	currentTime time.Time = time.Now()
+	currentPacketId int = 0
 
 	mainApp fyne.App
 	mainWindow fyne.Window
@@ -321,6 +322,13 @@ func onStart() {
 
 func onUpdate(deltaTime time.Duration) {
 	currentTime = currentTime.Add(deltaTime)
+
+	var testData []databaseAPI.TelemetryPacket = *databaseAPI.QueryFromPool(dbConnection)
+
+}
+
+func refreshGraphs() {
+	//use currentPacketId
 }
 
 func refreshGraphVisiblity() {
