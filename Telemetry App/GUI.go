@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"image/color"
+	"strconv"
+	"strings"
 	"time"
 
 	//"databaseAPI"
@@ -144,7 +146,7 @@ func main() {
 			//For testing with dummy data
 			//var packet databaseAPI.TelemetryPacket = databaseAPI.TempTelemetryPacket()
 			//throttle = packet.Accelerator_input * 100
-			
+
 			updateTelemetryLabels()
 
 			updateData(&throttleData, throttle)
@@ -264,6 +266,54 @@ func main() {
 			content.Objects = []fyne.CanvasObject{gyroGraphs}
 			content.Refresh()
 		}),
+		widget.NewLabel(" "),
+		widget.NewLabel(" "),
+		widget.NewLabel(" "),
+		widget.NewLabel(" "),
+		widget.NewButton("Replay Mode", func() {
+			// Clear the current content
+			content.Objects = nil
+
+			// Instruction label for lap input
+			instruction := widget.NewLabel("Enter 1-5 lap numbers separated by commas:")
+
+			// Entry widget for lap input
+			lapInput := widget.NewEntry()
+			lapInput.SetPlaceHolder("e.g., 1, 3, 5")
+
+			// Button to submit the lap numbers
+			submitButton := widget.NewButton("Submit", func() {
+				// Parse input and validate
+				input := lapInput.Text
+				lapNumbers := []int{}
+				if input != "" {
+					var parseError error
+					lapNumbers, parseError = parseLapNumbers(input)
+					if parseError != nil || len(lapNumbers) < 1 || len(lapNumbers) > 5 {
+						fyne.CurrentApp().SendNotification(&fyne.Notification{
+							Title:   "Invalid Input",
+							Content: "Please enter 1-5 valid lap numbers.",
+						})
+						return
+					}
+				}
+
+				// Handle valid lap numbers (e.g., load data for these laps)
+				fmt.Printf("Selected Lap Numbers: %v\n", lapNumbers)
+				// You can replace this with your replay logic
+			})
+
+			// Create a new layout for the replay input view
+			replayInput := container.NewVBox(
+				instruction,
+				lapInput,
+				submitButton,
+			)
+
+			// Set the content to the new replay input view
+			content.Objects = []fyne.CanvasObject{replayInput}
+			content.Refresh()
+		}),
 	)
 
 	content.Add(inputGraphs)
@@ -353,4 +403,18 @@ func createLegend(items []struct {
 		legendItems.Add(container.NewHBox(colorRect, label))
 	}
 	return legendItems
+}
+
+func parseLapNumbers(input string) ([]int, error) {
+	lapStrings := strings.Split(input, ",")
+	lapNumbers := make([]int, 0, len(lapStrings))
+	for _, lapStr := range lapStrings {
+		lapStr = strings.TrimSpace(lapStr)
+		lap, err := strconv.Atoi(lapStr)
+		if err != nil || lap < 1 {
+			return nil, fmt.Errorf("invalid lap number: %s", lapStr)
+		}
+		lapNumbers = append(lapNumbers, lap)
+	}
+	return lapNumbers, nil
 }
