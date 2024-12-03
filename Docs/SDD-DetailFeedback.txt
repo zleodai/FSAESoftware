@@ -1,0 +1,56 @@
+
+Documentation Feedback ~ Deliverable #4
+Software Design Document ~ Detailed Design
+CMSI 4071 Fall 2024
+==========================================
+
+DETAILED CSC AND CSU DESCRIPTIONS:
+   Descriptions are done in the next section.
+   Good enough on this section ~ nothing to add here.
+
+DETAILED CLASS DESCRIPTIONS:
+   Very nice work on this section and it subsumes the previous section as
+   well.  Nothing to add here.
+
+DETAILED INTERFACE DESCRIPTIONS:
+   Excellent job on this section ~ nothing to add here.
+
+DETAILED DATA STRUCTURE DESCRIPTIONS:
+   Excellent job on this section ~ nothing to add here.
+
+DETAILED DESIGN DIAGRAMS:
+   No diagrams in any of the sections of the detailed design.  You should at
+   least have an Entity-Relationship Diagram [ERD] for your database, but a
+   use case, activity, state, and/or sequence diagram elsewhere would be very
+   helpful to the readers' understanding.  Think about that for next time.
+
+DATABASE DESIGN AND DESCRIPTION:
+   This really should be an "Entity-Relationship Diagram" or "ERD".  However
+   since we are close to the end of the semester, I'm not going to make you
+   do this part again.  The verbal descriptions are pretty good, since you
+   talk about what the entities [tables] will be.
+
+   Are you sure that database security will not be an issue?  What happens
+   if another race team is able to corrupt your wifi connection and slip in
+   bogus data to your telemetry stream?  Will the driver end up being told
+   to steer the car into a wall?  Just a thought...
+
+----------------------------------------------
+OVERALL ASSESSMENT:
+   Category                          Points
+   CSC/CSU Descriptions:                2 of  2
+   Class Descriptions:                  3 of  3
+   Interface Descriptions:              3 of  3
+   Data structure Descriptions:         1 of  1
+   Design diagrams:                     0 of  4
+   Database design/descriptions:        2 of  2
+                                     ===========
+   Subtotal                            11 of 15
+   ------------------------------------------------------
+   Total Percentage:  11/15 = 73.33% which is a C
+
+Overall, you have done a very nice job on this document.  It's clear that it
+describes the system well and that you care about the engineering craft, even
+if you haven't followed the details of the specification for the document, so
+I'm bumping the score up by 20% to a 93.33%.
+
