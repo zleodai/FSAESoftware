@@ -245,6 +245,28 @@ func QueryLapFromPool(dbpool *pgxpool.Pool, lapId int64) *[]TelemetryPacket {
 	return &data
 }
 
+func QueryBetweenIdsFromPool(dbpool *pgxpool.Pool, startId int64, endId int64) *[]TelemetryPacket {
+	rows, err := dbpool.Query(context.Background(), "select id, lap_id, date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage from telemetry where id between $1 and $2", startId, endId)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "CollectRows error: %v\n", err)
+		os.Exit(1)
+	}
+	var data []TelemetryPacket
+
+	for rows.Next() {
+		var packet TelemetryPacket
+		err = rows.Scan(&packet.Id, &packet.LapId, &packet.Date_entry, &packet.Time_step, &packet.Tire_temps, &packet.Tire_pressures, &packet.Velocity, &packet.Location, &packet.Accelerator_input, &packet.Brake_input, &packet.Steering_angle, &packet.Gyro_pitch, &packet.Gyro_yaw, &packet.Gyro_roll, &packet.X_acceleration, &packet.Y_acceleration, &packet.Z_acceleration, &packet.Total_power_draw, &packet.Active_suspension_power_draw, &packet.Motor_power_draw, &packet.Battery_voltage, &packet.Traction_loss, &packet.Abs_throttle_limiting, &packet.Limited_slip_usage)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+			os.Exit(1)
+		}
+		data = append(data, packet)
+		LatestID = int64(math.Max(float64(packet.Id), float64(LatestID)))
+	}
+
+	return &data
+}
+
 func main() {
 	var dbpool = NewConnection()
 

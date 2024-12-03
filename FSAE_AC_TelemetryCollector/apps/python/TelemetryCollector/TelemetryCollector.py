@@ -3,6 +3,8 @@ import acsys
 import os
 from third_party.sim_info import *
 
+#AC Docs https://docs.google.com/document/d/13trBp6K1TjWbToUQs_nfFsB291-zVJzRZCNaTYt4Dzc/pub
+
 #region GUI Globals
 appName = "TelemetryCollector"
 width, height = 335 , 400
