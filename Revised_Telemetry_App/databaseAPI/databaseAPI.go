@@ -16,7 +16,6 @@ import (
 type MiniTelemetryPacket struct {
 	Id			int64
 	LapId 		int64
-	Location 	[2]float64
 }
 
 type TelemetryPacket struct {
@@ -274,7 +273,7 @@ func QueryBetweenIdsFromPool(dbpool *pgxpool.Pool, startId int64, endId int64) *
 }
 
 func QueryMiniPacketsFromPool(dbpool *pgxpool.Pool) *[]MiniTelemetryPacket {
-	rows, err := dbpool.Query(context.Background(), "select id, lap_id, location from telemetry")
+	rows, err := dbpool.Query(context.Background(), "select id, lap_id from telemetry")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "CollectRows error: %v\n", err)
 		os.Exit(1)
@@ -284,7 +283,7 @@ func QueryMiniPacketsFromPool(dbpool *pgxpool.Pool) *[]MiniTelemetryPacket {
 
 	for rows.Next() {
 		var packet MiniTelemetryPacket
-		err = rows.Scan(&packet.Id, &packet.LapId, &packet.Location)
+		err = rows.Scan(&packet.Id, &packet.LapId)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 			os.Exit(1)
