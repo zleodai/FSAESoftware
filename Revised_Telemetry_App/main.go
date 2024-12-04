@@ -22,6 +22,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
+//region customstructs
 type sessionLap struct {
 	sessionId int64
 	lapId int64
@@ -58,7 +59,7 @@ func (m appTheme) Font(style fyne.TextStyle) fyne.Resource {
 func (m appTheme) Size(name fyne.ThemeSizeName) float32 {
 	return theme.DefaultTheme().Size(name)
 }
-
+//endregion
 
 var (
 	_ fyne.Theme = (*appTheme)(nil)
@@ -73,11 +74,14 @@ var (
 
 	//IMPORTANT FOR MAP
 	packetInterval = 1
-	defaultCircleSize float32 = 4
-	selectedCircleSizeIncrease float32 = 4
+	defaultCircleSize float32 = 5
+	selectedCircleSizeIncrease float32 = 6.7
 
 	//region containers/labels
+	mainContainer *fyne.Container
+
 	mapContainer *fyne.Container
+	mapBackgroundP fyne.CanvasObject
 
 	mapActiveSessionLaps []sessionLap
 	mapTelemetryPoints map[sessionLap][]*canvas.Circle
@@ -88,7 +92,7 @@ var (
 	mapWidth float32 = resolutionWidth/2 + sideBarOffset
 	mapHeight float32 = resolutionHeight - bottomBarHeight
 
-	lapColors = []color.Color{color.NRGBA{R: 0, G: 0, B: 0, A: 255}, color.NRGBA{R: 0, G: 0, B: 255, A: 255}, color.NRGBA{R: 255, G: 255, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 0, A: 255}, color.NRGBA{R: 255, G: 255, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 255, A: 255}}
+	lapColors = []color.Color{color.NRGBA{R: 255, G: 255, B: 255, A: 255}, color.NRGBA{R: 0, G: 0, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 0, A: 255}, color.NRGBA{R: 255, G: 255, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 255, A: 255}}
 
 	legendContainer *fyne.Container
 
@@ -157,6 +161,21 @@ var (
 
 	defaultPacketStepInterval time.Duration = time.Millisecond * 1
 	nextPacketTimestamp time.Time = currentTime.Add(defaultPacketStepInterval)
+
+	mapCirclePointers map[*canvas.Circle]*fyne.CanvasObject = make(map[*canvas.Circle]*fyne.CanvasObject)
+	lastCircleOffset []float32 = []float32{} 
+
+	screenSpaceWidth = mapWidth
+	screenSpaceHeight = mapHeight
+
+	viewSpaceMoveSpeed float32 = 10
+	viewSpaceXOffset float32 = 0
+	viewSpaceYOffset float32 = 0
+	lastXOffset float32 = 0
+	lastYOffset float32 = 0
+
+	viewSpaceZoomFactor float32 = 1
+	lastViewSpaceZoomFactor float32 = 0
 )
 
 const (
@@ -238,7 +257,7 @@ func onStart() {
 	containerItems = make(map[*fyne.Container][]*fyne.CanvasObject)
 	containerContainers = make(map[*fyne.Container][]*fyne.Container)
 
-	mainContainer := container.NewWithoutLayout()
+	mainContainer = container.NewWithoutLayout()
 	containerPositions[mainContainer] = [2]float32{0, 0}
 	containerOffsets[mainContainer] = [2]float32{0, 0}
 	containerContainers[mainContainer] = []*fyne.Container{}
@@ -248,9 +267,9 @@ func onStart() {
 	containerItems[mapContainer] = []*fyne.CanvasObject{}
 	containerContainers[mapContainer] = []*fyne.Container{}
 
-	var mapBackgroundColor = color.NRGBA{R: 33, G: 33, B: 33, A: 255}
+	var mapBackgroundColor = color.NRGBA{R: 33, G: 33, B: 33, A: 0}
 
-	var mapBackgroundP fyne.CanvasObject = canvas.NewRectangle(mapBackgroundColor)
+	mapBackgroundP = canvas.NewRectangle(mapBackgroundColor)
 	resizeObject(mapBackgroundP, mapWidth, mapHeight)
 	addObject(mapContainer, &mapBackgroundP, 0, 0)
 
@@ -532,15 +551,35 @@ func onStart() {
 		var containerHead = mainContainer
 		var containerToMove = graphContainer
 
+		var expandedGridWidth = screenSpaceWidth * viewSpaceZoomFactor
+		var expandedGridHeight = screenSpaceHeight * viewSpaceZoomFactor
+
+		var xOffset = viewSpaceXOffset * viewSpaceZoomFactor
+		var yOffset = viewSpaceYOffset * viewSpaceZoomFactor
+
 		switch key.Name {
-			// case fyne.KeyUp:
-			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] - moveSpeed)
-			// case fyne.KeyDown:
-			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] + moveSpeed)
-			// case fyne.KeyLeft:
-			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] - moveSpeed, containerOffsets[mapContainer][1])
-			// case fyne.KeyRight:
-			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] + moveSpeed, containerOffsets[mapContainer][1])
+			case fyne.KeyUp:
+				if yOffset - viewSpaceMoveSpeed * viewSpaceZoomFactor >= 0 {
+					viewSpaceYOffset -= viewSpaceMoveSpeed
+				}
+			case fyne.KeyDown:
+				if yOffset + viewSpaceMoveSpeed * viewSpaceZoomFactor <= expandedGridHeight - screenSpaceHeight {
+					viewSpaceYOffset += viewSpaceMoveSpeed
+				}
+			case fyne.KeyLeft:
+				if xOffset - viewSpaceMoveSpeed * viewSpaceZoomFactor >= 0 {
+					viewSpaceXOffset -= viewSpaceMoveSpeed
+				}
+			case fyne.KeyRight:
+				if xOffset + viewSpaceMoveSpeed * viewSpaceZoomFactor <= expandedGridWidth - screenSpaceWidth {
+					viewSpaceXOffset += viewSpaceMoveSpeed
+				}
+			case fyne.KeyI:
+				viewSpaceZoomFactor += 0.1
+			case fyne.KeyO:
+				if viewSpaceZoomFactor - 0.1 >= 1 {
+					viewSpaceZoomFactor -= 0.1
+				}
 			case fyne.KeyS:
 				if containerOffsets[containerToMove][1] + moveSpeed > resolutionHeight * -1 {
 					moveContainer(containerHead, containerToMove, containerOffsets[containerToMove][0], containerOffsets[containerToMove][1] - moveSpeed)
@@ -647,6 +686,7 @@ func onUpdate(deltaTime time.Duration) {
 	refreshLabels()
 	refreshMaps()
 	refreshGraphs()
+	updateGraphToViewSpace()
 }
 
 func checkSelectedLaps() {
@@ -720,6 +760,7 @@ func refreshMaps() {
 		for _, circle := range circlesToDestroy {
 			circle.Hidden = true
 			graphContainer.Remove(circle)
+			delete(mapCirclePointers, circle)
 		}
 
 		indexInActiveSessionLaps := 0
@@ -802,6 +843,7 @@ func refreshMaps() {
 				newCircle.Resize(fyne.NewSize(1, 1))
 				newCircle.StrokeWidth = 1
 				var newCircleP fyne.CanvasObject = newCircle
+				mapCirclePointers[newCircle] = &newCircleP
 				resizeObject(newCircleP, defaultCircleSize, defaultCircleSize)
 				var packetX float32 = float32((packet.Location[0] - minX) * (float64(mapWidth/2))/(maxX - minX))
 				var packetY float32 = float32((packet.Location[1] - minY) * (float64(mapHeight/2))/(maxY - minY))
@@ -823,8 +865,9 @@ func refreshMaps() {
 		selectedIndex := int(mapLastSelectedPacketId - packetBounds[0])/packetInterval
 		for index, circle := range mapTelemetryPoints[mapLastSelectedSessionLap] {
 			if index == selectedIndex {
+				circleP := mapCirclePointers[circle]
 				resizeObject(circle, defaultCircleSize, defaultCircleSize)
-				circle.Move(circle.Position().AddXY(defaultCircleSize * selectedCircleSizeIncrease/2, defaultCircleSize * selectedCircleSizeIncrease/2))
+				moveObject(mapContainer, circleP, lastCircleOffset[0], lastCircleOffset[1])
 			}
 		}
 
@@ -835,8 +878,10 @@ func refreshMaps() {
 		selectedIndex = int(currentPacketId - packetBounds[0]/int64(packetInterval))
 		for index, circle := range mapTelemetryPoints[currentSessionLap] {
 			if index == selectedIndex {
+				circleP := mapCirclePointers[circle]
+				lastCircleOffset = []float32{objectOffsets[circleP][0], objectOffsets[circleP][1]}
 				resizeObject(circle, defaultCircleSize * selectedCircleSizeIncrease, defaultCircleSize * selectedCircleSizeIncrease)
-				circle.Move(circle.Position().SubtractXY(defaultCircleSize * selectedCircleSizeIncrease/2, defaultCircleSize * selectedCircleSizeIncrease/2))
+				moveObject(mapContainer, circleP, lastCircleOffset[0] - defaultCircleSize * selectedCircleSizeIncrease/2, lastCircleOffset[1] - defaultCircleSize * selectedCircleSizeIncrease/2)
 			}
 		}
 
@@ -993,6 +1038,51 @@ func refreshGraphs() {
 			}
 		}
 	}
+}
+
+func updateGraphToViewSpace() {
+	var xOffset float32 = -1 * viewSpaceXOffset * viewSpaceZoomFactor
+	var yOffset float32 = -1 * viewSpaceYOffset * viewSpaceZoomFactor
+
+	var changed = false
+
+	if lastXOffset != viewSpaceXOffset || lastYOffset != viewSpaceYOffset {
+		lastXOffset = viewSpaceXOffset
+		lastYOffset = viewSpaceYOffset
+		changed = true
+	}
+
+	if lastViewSpaceZoomFactor != viewSpaceZoomFactor {
+		var scaleFactor float32 = viewSpaceZoomFactor/lastViewSpaceZoomFactor
+
+		scaleGraph(scaleFactor)
+
+		lastViewSpaceZoomFactor = viewSpaceZoomFactor
+		changed = true
+	}
+
+	if changed {
+		moveContainer(mainContainer, mapContainer, xOffset, yOffset)
+	}
+}
+
+func scaleGraph(scaleFactor float32) {
+	for _, points := range mapTelemetryPoints {
+		for _, circle := range points {
+			var circleP *fyne.CanvasObject = mapCirclePointers[circle]
+			newCircleOffsetX := objectOffsets[circleP][0] * scaleFactor
+			newCircleOffsetY := objectOffsets[circleP][1] * scaleFactor
+
+			// resizeObject(*circleP, circle.Size().Width * scaleFactor, circle.Size().Height * scaleFactor)
+			moveObject(mapContainer, circleP, newCircleOffsetX, newCircleOffsetY)
+		}
+	}
+
+	mapBackgroundPOffsetX := objectOffsets[&mapBackgroundP][0] * scaleFactor
+	mapBackgroundPOffsetY := objectOffsets[&mapBackgroundP][1] * scaleFactor
+ 
+	// resizeObject(mapBackgroundP, mapBackgroundP.Size().Width * scaleFactor, mapBackgroundP.Size().Height * scaleFactor)
+	moveObject(mapContainer, &mapBackgroundP, mapBackgroundPOffsetX, mapBackgroundPOffsetY)
 }
 
 func refreshGraphVisiblity() {

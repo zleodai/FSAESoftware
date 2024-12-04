@@ -71,3 +71,94 @@
 	
 2024-12-04 07:25:54.982 PST [375992] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
 	
+2024-12-04 12:11:42.604 PST [23128] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-04 12:11:42.610 PST [23128] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-04 12:11:42.610 PST [23128] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-12-04 12:11:42.667 PST [43764] LOG:  database system was interrupted; last known up at 2024-12-04 06:56:37 PST
+2024-12-04 12:11:48.568 PST [43764] LOG:  could not open file "./logfile.txt": sharing violation
+2024-12-04 12:11:48.568 PST [43764] DETAIL:  Continuing to retry for 30 seconds.
+2024-12-04 12:11:48.568 PST [43764] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2024-12-04 12:12:15.616 PST [43764] LOG:  syncing data directory (fsync), elapsed time: 32.94 s, current path: ./pg_commit_ts
+2024-12-04 12:12:15.624 PST [43764] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-04 12:12:15.628 PST [43764] LOG:  redo starts at 0/2304C90
+2024-12-04 12:12:15.628 PST [43764] LOG:  invalid record length at 0/2304DD0: expected at least 24, got 0
+2024-12-04 12:12:15.629 PST [43764] LOG:  redo done at 0/2304D98 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-12-04 12:12:15.632 PST [24992] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-12-04 12:12:15.639 PST [24992] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.008 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/2304DD0, redo lsn=0/2304DD0
+2024-12-04 12:12:15.660 PST [23128] LOG:  database system is ready to accept connections
+2024-12-04 12:14:28.458 PST [23128] LOG:  received fast shutdown request
+2024-12-04 12:14:28.459 PST [13404] ERROR:  canceling statement due to user request
+2024-12-04 12:14:28.459 PST [13152] ERROR:  canceling statement due to user request
+2024-12-04 12:14:28.459 PST [13152] STATEMENT:  select id, lap_id, date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage from telemetry where id between $1 and $2
+2024-12-04 12:14:28.460 PST [23128] LOG:  aborting any active transactions
+2024-12-04 12:14:28.460 PST [13152] FATAL:  terminating connection due to administrator command
+2024-12-04 12:14:28.464 PST [23128] LOG:  background worker "logical replication launcher" (PID 13404) exited with exit code 1
+2024-12-04 12:14:28.466 PST [24992] LOG:  shutting down
+2024-12-04 12:14:28.467 PST [24992] LOG:  checkpoint starting: shutdown immediate
+2024-12-04 12:14:28.474 PST [24992] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.008 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/2304E80, redo lsn=0/2304E80
+2024-12-04 12:14:28.483 PST [23128] LOG:  database system is shut down
+2024-12-04 12:16:10.485 PST [27700] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-04 12:16:10.488 PST [27700] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-04 12:16:10.488 PST [27700] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-12-04 12:16:10.628 PST [38252] LOG:  database system was shut down at 2024-12-04 12:14:28 PST
+2024-12-04 12:16:10.645 PST [27700] LOG:  database system is ready to accept connections
+2024-12-04 12:17:33.076 PST [27884] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 12:18:49.336 PST [33800] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 12:19:16.739 PST [27700] LOG:  received fast shutdown request
+2024-12-04 12:19:16.740 PST [27700] LOG:  aborting any active transactions
+2024-12-04 12:19:16.744 PST [27700] LOG:  background worker "logical replication launcher" (PID 21756) exited with exit code 1
+2024-12-04 12:19:16.745 PST [40896] LOG:  shutting down
+2024-12-04 12:19:16.746 PST [40896] LOG:  checkpoint starting: shutdown immediate
+2024-12-04 12:19:16.753 PST [40896] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.009 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/2304F30, redo lsn=0/2304F30
+2024-12-04 12:19:16.760 PST [27700] LOG:  database system is shut down
+2024-12-04 13:16:27.134 PST [21756] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-04 13:16:27.136 PST [21756] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-04 13:16:27.137 PST [21756] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2024-12-04 13:16:27.166 PST [38892] LOG:  database system was shut down at 2024-12-04 12:19:16 PST
+2024-12-04 13:16:27.182 PST [21756] LOG:  database system is ready to accept connections
+2024-12-04 13:17:53.611 PST [6796] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:19:33.910 PST [36260] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:21:27.175 PST [16940] LOG:  checkpoint starting: time
+2024-12-04 13:21:27.184 PST [16940] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.009 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/2305038, redo lsn=0/2304FE0
+2024-12-04 13:26:39.046 PST [26504] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:28:04.945 PST [43852] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:30:44.788 PST [23076] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:32:02.694 PST [27772] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:36:22.705 PST [14772] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:43:24.298 PST [26760] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:45:58.646 PST [12076] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:51:07.166 PST [45064] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 13:53:38.263 PST [34868] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:05:04.389 PST [43172] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:06:34.512 PST [41696] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:07:38.808 PST [11912] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:08:18.668 PST [33244] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:08:55.110 PST [36556] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:12:47.176 PST [31652] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 14:13:23.700 PST [21756] LOG:  received fast shutdown request
+2024-12-04 14:13:23.700 PST [27540] ERROR:  canceling statement due to user request
+2024-12-04 14:13:23.702 PST [21756] LOG:  aborting any active transactions
+2024-12-04 14:13:23.704 PST [21756] LOG:  background worker "logical replication launcher" (PID 27540) exited with exit code 1
+2024-12-04 14:13:23.706 PST [16940] LOG:  shutting down
+2024-12-04 14:13:23.707 PST [16940] LOG:  checkpoint starting: shutdown immediate
+2024-12-04 14:13:23.712 PST [16940] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.007 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/23050E8, redo lsn=0/23050E8
+2024-12-04 14:13:23.720 PST [21756] LOG:  database system is shut down
