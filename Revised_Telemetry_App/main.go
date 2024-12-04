@@ -176,6 +176,9 @@ var (
 
 	viewSpaceZoomFactor float32 = 1
 	lastViewSpaceZoomFactor float32 = 0
+
+	lockOn bool = false
+	currentCarOffset []float32 = []float32{0, 0}
 )
 
 const (
@@ -558,6 +561,45 @@ func onStart() {
 		var yOffset = viewSpaceYOffset * viewSpaceZoomFactor
 
 		switch key.Name {
+			case fyne.KeyF:
+				currentSessionLap := sessionLap{sessionId: currentSessionId, lapId: currentLapId}
+				packetIds := packetIdsBySessionLap[currentSessionLap]
+				maxPacketId := packetIds[1] 
+				if currentPacketId + 3 > maxPacketId {
+					var maxLap int64 = -9223372036854775808
+					for _, lap := range lapsBySession[currentSessionId] {
+						if lap > maxLap {
+							maxLap = lap
+						}
+					}
+					if currentLapId + 1 <= maxLap {
+						currentLapId += 1
+					} else {
+						var maxSession int64 = -9223372036854775808
+						for _, session := range maps.Keys(lapsBySession) {
+							if session > maxSession {
+								maxSession = session
+							}
+						}
+
+						if currentSessionId + 1 <= maxSession {
+							currentSessionId += 1
+
+							var minLap int64 = 9223372036854775807
+							for _, lap := range lapsBySession[currentSessionId] {
+								if lap < minLap {
+									minLap = lap
+								}
+							}
+							currentLapId = minLap
+						} else {
+							currentPacketId -= 3
+						}
+					}
+				}
+				currentPacketId += 3
+			case fyne.KeyK:
+				lockOn = !lockOn
 			case fyne.KeyUp:
 				if yOffset - viewSpaceMoveSpeed * viewSpaceZoomFactor >= 0 {
 					viewSpaceYOffset -= viewSpaceMoveSpeed
@@ -682,11 +724,19 @@ func onUpdate(deltaTime time.Duration) {
 		}
 	}
 
+	checkLockOn()
 	checkSelectedLaps()
 	refreshLabels()
 	refreshMaps()
 	refreshGraphs()
 	updateGraphToViewSpace()
+}
+
+func checkLockOn() {
+	if lockOn {
+		viewSpaceXOffset = (currentCarOffset[0] - screenSpaceWidth/2) / viewSpaceZoomFactor
+		viewSpaceYOffset = (currentCarOffset[1] - screenSpaceHeight/2) / viewSpaceZoomFactor
+	}
 }
 
 func checkSelectedLaps() {
@@ -718,8 +768,8 @@ func checkSelectedLaps() {
 
 func refreshLabels() {
 	currentInfoLabel.SetText(fmt.Sprintf("Session %d, Lap %d, Packet %d", currentSessionId, currentLapId, currentPacketId))
-	lapSelectTotalSessions.SetText(fmt.Sprintf("%d sessions", totalSessions))
-	lapSelectTotalLaps.SetText(fmt.Sprintf("%d laps", len(lapsBySession[currentSessionId])))
+	lapSelectTotalSessions.SetText(fmt.Sprintf("%d sessions avaliable", totalSessions))
+	lapSelectTotalLaps.SetText(fmt.Sprintf("%d laps avaliable", len(lapsBySession[currentSessionId])))
 }
 
 func refreshMaps() {
@@ -880,6 +930,7 @@ func refreshMaps() {
 			if index == selectedIndex {
 				circleP := mapCirclePointers[circle]
 				lastCircleOffset = []float32{objectOffsets[circleP][0], objectOffsets[circleP][1]}
+				currentCarOffset = lastCircleOffset
 				resizeObject(circle, defaultCircleSize * selectedCircleSizeIncrease, defaultCircleSize * selectedCircleSizeIncrease)
 				moveObject(mapContainer, circleP, lastCircleOffset[0] - defaultCircleSize * selectedCircleSizeIncrease/2, lastCircleOffset[1] - defaultCircleSize * selectedCircleSizeIncrease/2)
 			}
