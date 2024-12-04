@@ -640,7 +640,34 @@ func refreshMaps() {
 }
 
 func refreshGraphs() {
+	//packetIds := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}]
+	//telemetryPackets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetIds[0], packetIds[1])
+	//get the float64 array of telemetry packets from currentpacket to currentpacket - maxDataPoints (and if currentpacket - maxdatapoints < 0, clamp to 0)
+	var testData []float64 = make([]float64, 0, 100)
+	for i := 0; i < len(testData); i++ {
+		testData[i] = 20
+	}
+	drawGraph(speedGraphContainer, testData, 50, -10)
+}
 
+func drawGraph(container *fyne.Container, data []float64, maxScale, minScale float64) {
+	graphWidth := 100 //resize these to fit the background
+	graphHeight := 50
+	maxDataPoints := 100
+	graphColor := color.RGBA{R: 255, G: 0, B: 0, A: 255}
+	for i := 1; i < len(data); i++ {
+		x1 := float64(i-1) * float64(graphWidth) / float64(maxDataPoints)
+		y1 := float64(graphHeight) - (data[i-1]-minScale)/(maxScale-minScale)*float64(graphHeight)
+		x2 := float64(i) * float64(graphWidth) / float64(maxDataPoints)
+		y2 := float64(graphHeight) - (data[i]-minScale)/(maxScale-minScale)*float64(graphHeight)
+		line := canvas.NewLine(graphColor)
+		line.StrokeWidth = 2
+		line.Position1 = fyne.NewPos(float32(x1), float32(y1))
+		line.Position2 = fyne.NewPos(float32(x2), float32(y2))
+		container.Add(line)
+	}
+	container.NewVBox(widget.NewLabel(("KAPPA PENIS")))
+	container.Refresh()
 }
 
 func refreshGraphVisiblity() {
