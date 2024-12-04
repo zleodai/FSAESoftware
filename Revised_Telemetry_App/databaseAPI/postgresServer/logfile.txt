@@ -95,3 +95,63 @@
 	
 2024-12-03 21:35:13.937 PST [30264] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
 	
+2024-12-03 23:02:28.101 PST [175484] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-03 23:02:28.104 PST [175484] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-03 23:02:28.104 PST [175484] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-03 23:02:28.122 PST [21412] LOG:  database system was interrupted; last known up at 2024-12-03 18:27:37 PST
+2024-12-03 23:02:33.456 PST [21412] LOG:  could not open file "./logfile.txt": sharing violation
+2024-12-03 23:02:33.456 PST [21412] DETAIL:  Continuing to retry for 30 seconds.
+2024-12-03 23:02:33.456 PST [21412] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2024-12-03 23:02:54.548 PST [175484] LOG:  received fast shutdown request
+2024-12-03 23:02:58.224 PST [21412] LOG:  syncing data directory (fsync), elapsed time: 30.10 s, current path: ./pg_commit_ts
+2024-12-03 23:02:58.231 PST [21412] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-03 23:02:58.234 PST [21412] LOG:  redo starts at 0/1A34BE8
+2024-12-03 23:02:58.237 PST [20824] LOG:  shutting down
+2024-12-03 23:02:58.240 PST [175484] LOG:  database system is shut down
+2024-12-03 23:02:58.289 PST [7992] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-03 23:02:58.292 PST [7992] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-03 23:02:58.292 PST [7992] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-03 23:02:58.310 PST [149392] LOG:  database system was shut down in recovery at 2024-12-03 23:02:58 PST
+2024-12-03 23:02:58.310 PST [149392] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-03 23:02:58.312 PST [149392] LOG:  redo starts at 0/1A34BE8
+2024-12-03 23:02:58.312 PST [149392] LOG:  invalid record length at 0/1A34CF0: expected at least 24, got 0
+2024-12-03 23:02:58.313 PST [149392] LOG:  redo done at 0/1A34CB8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-12-03 23:02:58.315 PST [126648] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-12-03 23:02:58.320 PST [126648] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.006 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1A34CF0, redo lsn=0/1A34CF0
+2024-12-03 23:02:58.328 PST [7992] LOG:  database system is ready to accept connections
+2024-12-03 23:04:24.460 PST [92156] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 23:05:17.676 PST [7992] LOG:  received fast shutdown request
+2024-12-03 23:05:17.676 PST [7992] LOG:  aborting any active transactions
+2024-12-03 23:05:17.677 PST [98804] FATAL:  terminating connection due to administrator command
+2024-12-03 23:05:17.678 PST [28992] ERROR:  canceling statement due to user request
+2024-12-03 23:05:17.680 PST [7992] LOG:  background worker "logical replication launcher" (PID 28992) exited with exit code 1
+2024-12-03 23:05:17.680 PST [126648] LOG:  shutting down
+2024-12-03 23:05:17.680 PST [126648] LOG:  checkpoint starting: shutdown immediate
+2024-12-03 23:05:17.684 PST [126648] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1A34DA0, redo lsn=0/1A34DA0
+2024-12-03 23:05:17.688 PST [7992] LOG:  database system is shut down
+2024-12-03 23:09:41.889 PST [18956] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-03 23:09:41.891 PST [18956] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-03 23:09:41.891 PST [18956] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-03 23:09:41.909 PST [25936] LOG:  database system was shut down at 2024-12-03 23:05:17 PST
+2024-12-03 23:09:41.918 PST [18956] LOG:  database system is ready to accept connections
+2024-12-03 23:10:02.242 PST [271632] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 23:14:41.907 PST [3580] LOG:  checkpoint starting: time
+2024-12-03 23:14:41.912 PST [3580] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.006 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1A34EA8, redo lsn=0/1A34E50
+2024-12-03 23:19:52.830 PST [18956] LOG:  background worker "logical replication launcher" (PID 123232) was terminated by exception 0xC000013A
+2024-12-03 23:19:52.830 PST [18956] HINT:  See C include file "ntstatus.h" for a description of the hexadecimal value.
+2024-12-03 23:19:52.830 PST [18956] LOG:  terminating any other active server processes
+2024-12-03 23:20:30.294 PST [129856] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-03 23:20:30.296 PST [129856] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-03 23:20:30.296 PST [129856] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-03 23:20:30.415 PST [24804] LOG:  database system was interrupted; last known up at 2024-12-03 23:14:41 PST
+2024-12-03 23:20:35.733 PST [24804] LOG:  could not open file "./logfile.txt": sharing violation
+2024-12-03 23:20:35.733 PST [24804] DETAIL:  Continuing to retry for 30 seconds.
+2024-12-03 23:20:35.733 PST [24804] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2024-12-03 23:20:46.441 PST [129856] LOG:  received fast shutdown request
+2024-12-03 23:21:00.517 PST [24804] LOG:  syncing data directory (fsync), elapsed time: 30.10 s, current path: ./pg_commit_ts
+2024-12-03 23:21:00.522 PST [24804] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-03 23:21:00.525 PST [24804] LOG:  redo starts at 0/1A34E50
+2024-12-03 23:21:00.527 PST [11480] LOG:  shutting down
+2024-12-03 23:21:00.531 PST [129856] LOG:  database system is shut down
