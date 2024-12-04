@@ -109,11 +109,13 @@ var (
 	accelerationGraphContainer *fyne.Container
 	speedGraphContainer *fyne.Container
 
+	tireColors map[int]color.Color = map[int]color.Color{0: color.RGBA{R: 255, G: 255, B: 255, A: 255}, 1: color.RGBA{R: 0, G: 255, B: 0, A: 255}, 2: color.RGBA{R: 0, G: 0, B: 255, A: 255}, 3: color.RGBA{R: 255, G: 0, B: 0, A: 255}}
+
 	graphSelectionContainer *fyne.Container
 
 	activeGraphs []*fyne.Container
 	allGraphs []*fyne.Container
-
+	graphLines map[*fyne.Container][]*canvas.Line
 
 	lapSelectContainer *fyne.Container
 
@@ -228,6 +230,7 @@ func onStart() {
 	//region container initalization
 	activeGraphs = []*fyne.Container{}
 	allGraphs = []*fyne.Container{}
+	graphLines = make(map[*fyne.Container][]*canvas.Line)
 
 	objectOffsets = make(map[*fyne.CanvasObject][2]float32)
 	containerPositions = make(map[*fyne.Container][2]float32)
@@ -530,14 +533,14 @@ func onStart() {
 		var containerToMove = graphContainer
 
 		switch key.Name {
-			case fyne.KeyUp:
-				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] - moveSpeed)
-			case fyne.KeyDown:
-				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] + moveSpeed)
-			case fyne.KeyLeft:
-				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] - moveSpeed, containerOffsets[mapContainer][1])
-			case fyne.KeyRight:
-				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] + moveSpeed, containerOffsets[mapContainer][1])
+			// case fyne.KeyUp:
+			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] - moveSpeed)
+			// case fyne.KeyDown:
+			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] + moveSpeed)
+			// case fyne.KeyLeft:
+			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] - moveSpeed, containerOffsets[mapContainer][1])
+			// case fyne.KeyRight:
+			// 	moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] + moveSpeed, containerOffsets[mapContainer][1])
 			case fyne.KeyS:
 				if containerOffsets[containerToMove][1] + moveSpeed > resolutionHeight * -1 {
 					moveContainer(containerHead, containerToMove, containerOffsets[containerToMove][0], containerOffsets[containerToMove][1] - moveSpeed)
@@ -769,9 +772,6 @@ func refreshMaps() {
 	}
 
 	for _, sessionLapToGenerate := range lapsNeededToGenerate {
-		//legendPoints
-		//legendLabels
-
 		packetsBounds := packetIdsBySessionLap[sessionLapToGenerate]
 		packets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetsBounds[0], packetsBounds[1])
 		 
@@ -790,8 +790,8 @@ func refreshMaps() {
 			if location[1] > maxY { maxY = location[1] }
 		}
 
-		var mapOffset float32 = 250
-		var mapIncrease float32 = 1.5
+		var mapOffset float32 = 50
+		var mapIncrease float32 = 1.75
 
 		var nextPacketToDraw = 0
 
@@ -803,9 +803,9 @@ func refreshMaps() {
 				newCircle.StrokeWidth = 1
 				var newCircleP fyne.CanvasObject = newCircle
 				resizeObject(newCircleP, defaultCircleSize, defaultCircleSize)
-				var packetX float32 = float32(packet.Location[0] * (float64(mapWidth/2))/(maxX - minX)) - float32(minX)
-				var packetY float32 = float32(packet.Location[1] * (float64(mapHeight/2))/(maxY - minY)) - float32(minY)/2
-				addObject(mapContainer, &newCircleP, packetX * mapIncrease - mapOffset, packetY * mapIncrease - mapOffset)
+				var packetX float32 = float32((packet.Location[0] - minX) * (float64(mapWidth/2))/(maxX - minX))
+				var packetY float32 = float32((packet.Location[1] - minY) * (float64(mapHeight/2))/(maxY - minY))
+				addObject(mapContainer, &newCircleP, packetX * mapIncrease + mapOffset, packetY * mapIncrease + mapOffset)
 
 				lapCircles = append(lapCircles, newCircle)
 			}
@@ -846,35 +846,153 @@ func refreshMaps() {
 }
 
 func refreshGraphs() {
-	// packetIds := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}]
-	// telemetryPackets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetIds[0], packetIds[1])
+	packetBounds := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}]
+	telemetryPackets := *databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetBounds[0], packetBounds[1])
 
-	// speedArray := []float64{}
-	// for _, packet := range *telemetryPackets {
-	// 	speedArray = append(speedArray, packet.Velocity)
-	// }
+	var packetSpan int = 10
+	var currentPacketIndex int = int(currentPacketId - packetBounds[0])
 
-	// drawGraph(speedGraphContainer, speedArray, 50, -10)
-}
+	var graphWidth float32 = 720
+	var graphHeight float32 = 180
 
-func drawGraph(container *fyne.Container, data []float64, maxScale, minScale float64) {
-	graphWidth := 1000 //resize these to fit the background
-	graphHeight := 50
-	maxDataPoints := 100
-	graphColor := color.RGBA{R: 255, G: 0, B: 0, A: 255}
-	for i := 1; i < len(data); i++ {
-		x1 := float64(i-1) * float64(graphWidth) / float64(maxDataPoints)
-		y1 := float64(graphHeight) - (data[i-1]-minScale)/(maxScale-minScale)*float64(graphHeight)
-		x2 := float64(i) * float64(graphWidth) / float64(maxDataPoints)
-		y2 := float64(graphHeight) - (data[i]-minScale)/(maxScale-minScale)*float64(graphHeight)
-		line := canvas.NewLine(graphColor)
-		var lineP fyne.CanvasObject = line
-		line.StrokeWidth = 2
-		line.Position1 = fyne.NewPos(float32(x1), float32(y1))
-		line.Position2 = fyne.NewPos(float32(x2), float32(y2))
-		addObject(container, &lineP, 0, 0)
+	var graphXSpacing float32 = graphWidth/(float32(packetSpan) * 2)
+
+	for _, graph := range activeGraphs {
+		var dataToDraw []float32
+		var dataBounds [2]float32
+
+		var tires bool = false
+		var tireData [][4]float64
+
+		switch graph{
+			case tireTempsGraphContainer:
+				tires = true
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						tireData = append(tireData, packet.Tire_temps)
+					}
+				}
+				dataBounds = [2]float32{20, 100}
+			case tirePressuresGraphContainer:
+				tires = true
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						tireData = append(tireData, packet.Tire_pressures)
+					}
+				}
+				dataBounds = [2]float32{20, 40}
+			case brakeGraphContainer:
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						dataToDraw = append(dataToDraw, float32(packet.Brake_input))
+					}
+				}
+				dataBounds = [2]float32{0, 1}
+			case throttleGraphContainer:
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						dataToDraw = append(dataToDraw, float32(packet.Accelerator_input))
+					}
+				}
+				dataBounds = [2]float32{0, 1}
+			case steeringGraphContainer:
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						dataToDraw = append(dataToDraw, float32(packet.Steering_angle))
+					}
+				}
+				dataBounds = [2]float32{-450, 450}
+			case accelerationGraphContainer:
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						dataToDraw = append(dataToDraw, float32(packet.X_acceleration + packet.Z_acceleration))
+					}
+				}
+				dataBounds = [2]float32{-0.1, 0.1}
+			case speedGraphContainer:
+				for index, packet := range telemetryPackets {
+					if index <= currentPacketIndex + packetSpan && index >= currentPacketIndex - packetSpan {
+						dataToDraw = append(dataToDraw, float32(packet.Velocity))
+					}
+				}
+				dataBounds = [2]float32{0, 180}
+		}		
+
+		if !tires {
+			linesNeeded := len(dataToDraw) -1
+			existingLineCount := 0
+
+			existingLines, inDict := graphLines[graph]
+			if !inDict {
+				graphLines[graph] = []*canvas.Line{}
+			} else {
+				existingLineCount = len(existingLines)
+			}
+
+			for i := 0; i < linesNeeded - existingLineCount; i++ {
+				newLine := canvas.NewLine(color.RGBA{R: 255, G: 0, B: 0, A: 255})
+				newLine.StrokeWidth = 2
+				var newLineP fyne.CanvasObject = newLine
+				addObject(graph, &newLineP, 0, 0)
+
+				graphLines[graph] = append(graphLines[graph], newLine)
+			}
+
+			for i, line := range graphLines[graph] {
+				if len(dataToDraw) > i + 1 {
+					xI := graphXSpacing * float32(i)
+					yI := graphHeight - (dataToDraw[i] - dataBounds[0]) * graphHeight/(dataBounds[1] - dataBounds[0])
+					xF := graphXSpacing * float32(i + 1)
+					yF := graphHeight - (dataToDraw[i + 1] - dataBounds[0]) * graphHeight/(dataBounds[1] - dataBounds[0])
+
+					line.Position1.X = xI + containerOffsets[graph][0] + containerOffsets[graphContainer][0]
+					line.Position1.Y = yI + containerOffsets[graph][1] + containerOffsets[graphContainer][1]
+					line.Position2.X = xF + containerOffsets[graph][0] + containerOffsets[graphContainer][0]
+					line.Position2.Y = yF + containerOffsets[graph][1] + containerOffsets[graphContainer][1]
+				}
+			}
+		} else {
+			linesNeeded := (len(tireData) -1) * 4
+			existingLineCount := 0
+
+			existingLines, inDict := graphLines[graph]
+			if !inDict {
+				graphLines[graph] = []*canvas.Line{}
+			} else {
+				existingLineCount = len(existingLines)
+			}
+
+			for i := 0; i < linesNeeded - existingLineCount; i++ {
+				newLine := canvas.NewLine(color.RGBA{R: 255, G: 0, B: 0, A: 255})
+				newLine.StrokeWidth = 2
+				var newLineP fyne.CanvasObject = newLine
+				addObject(graph, &newLineP, 0, 0)
+
+				graphLines[graph] = append(graphLines[graph], newLine)
+			}
+
+			var lineIndex int = 0
+
+			for index, _ := range tireData {
+				if index != len(tireData) -1 {
+					for tireIndex := 0; tireIndex < 4; tireIndex++ {
+						line := graphLines[graph][lineIndex]
+						line.StrokeColor = tireColors[tireIndex]
+						xI := graphXSpacing * float32(index)
+						yI := graphHeight - (float32(tireData[index][tireIndex]) - dataBounds[0]) * graphHeight/(dataBounds[1] - dataBounds[0])
+						xF := graphXSpacing * float32(index + 1)
+						yF := graphHeight - (float32(tireData[index + 1][tireIndex]) - dataBounds[0]) * graphHeight/(dataBounds[1] - dataBounds[0])
+
+						line.Position1.X = xI + containerOffsets[graph][0] + containerOffsets[graphContainer][0]
+						line.Position1.Y = yI + containerOffsets[graph][1] + containerOffsets[graphContainer][1]
+						line.Position2.X = xF + containerOffsets[graph][0] + containerOffsets[graphContainer][0]
+						line.Position2.Y = yF + containerOffsets[graph][1] + containerOffsets[graphContainer][1]
+						lineIndex++
+					} 
+				}
+			}
+		}
 	}
-	container.Refresh()
 }
 
 func refreshGraphVisiblity() {
