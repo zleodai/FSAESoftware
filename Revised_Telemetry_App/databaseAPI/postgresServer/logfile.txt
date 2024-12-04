@@ -19,3 +19,79 @@
 	
 2024-12-03 17:52:35.115 PST [43848] LOG:  checkpoint starting: time
 2024-12-03 17:52:40.428 PST [43848] LOG:  checkpoint complete: wrote 52 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.302 s, sync=0.006 s, total=5.314 s; sync files=14, longest=0.001 s, average=0.001 s; distance=288 kB, estimate=288 kB; lsn=0/1A27C98, redo lsn=0/1A27C40
+2024-12-03 18:22:58.088 PST [44608] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:24:20.508 PST [21684] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:24:45.573 PST [7892] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:27:35.471 PST [43848] LOG:  checkpoint starting: time
+2024-12-03 18:27:37.002 PST [43848] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.520 s, sync=0.005 s, total=1.531 s; sync files=8, longest=0.001 s, average=0.001 s; distance=51 kB, estimate=264 kB; lsn=0/1A34C40, redo lsn=0/1A34BE8
+2024-12-03 18:27:55.655 PST [2724] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:36:04.636 PST [35760] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:36:53.547 PST [21992] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:49:45.942 PST [17756] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:50:36.904 PST [12732] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 18:51:29.098 PST [25668] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 19:08:31.039 PST [23840] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 19:09:21.895 PST [6356] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 19:39:18.317 PST [43476] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 19:53:15.680 PST [12112] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 19:57:49.112 PST [21108] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:00:09.891 PST [27664] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:04:08.066 PST [25384] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:25:45.539 PST [22072] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:26:44.945 PST [45144] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:28:03.238 PST [2760] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:29:36.092 PST [30748] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:31:51.657 PST [34188] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:32:57.460 PST [24968] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:34:07.742 PST [36504] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:36:09.544 PST [38680] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:52:06.201 PST [6548] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:53:42.260 PST [22512] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 20:56:28.718 PST [20972] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:03:16.037 PST [32864] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:06:32.900 PST [34124] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:08:09.279 PST [22280] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:10:43.619 PST [43080] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:12:08.785 PST [38140] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:14:24.265 PST [15576] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:15:06.646 PST [34356] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:15:43.850 PST [18608] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:34:31.302 PST [36764] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-03 21:35:13.937 PST [30264] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
