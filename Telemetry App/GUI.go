@@ -279,19 +279,14 @@ func main() {
 		widget.NewLabel(" "),
 		widget.NewLabel(" "),
 		widget.NewButton("Replay Mode", func() {
-			// Clear the current content
 			content.Objects = nil
 
-			// Instruction label for lap input
 			instruction := widget.NewLabel("Enter 1-5 lap numbers separated by commas:")
 
-			// Entry widget for lap input
 			lapInput := widget.NewEntry()
 			lapInput.SetPlaceHolder("e.g., 1, 3, 5")
 
-			// Button to submit the lap numbers
 			submitButton := widget.NewButton("Submit", func() {
-				// Parse input and validate
 				input := lapInput.Text
 				lapNumbers := []int{}
 				if input != "" {
@@ -305,20 +300,13 @@ func main() {
 						return
 					}
 				}
-
-				// Handle valid lap numbers (e.g., load data for these laps)
 				fmt.Printf("Selected Lap Numbers: %v\n", lapNumbers)
-				// You can replace this with your replay logic
 			})
-
-			// Create a new layout for the replay input view
 			replayInput := container.NewVBox(
 				instruction,
 				lapInput,
 				submitButton,
 			)
-
-			// Set the content to the new replay input view
 			content.Objects = []fyne.CanvasObject{replayInput}
 			content.Refresh()
 		}),
