@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"image/color"
+	"math"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -67,13 +69,33 @@ var (
 	mainWindow fyne.Window
 
 	sideBarOffset float32 = 200
-	bottomBarHeight float32 = 300
+	bottomBarHeight float32 = 150
+
+	//IMPORTANT FOR MAP
+	packetInterval = 1
+	defaultCircleSize float32 = 4
+	selectedCircleSizeIncrease float32 = 4
 
 	//region containers/labels
 	mapContainer *fyne.Container
 
 	mapActiveSessionLaps []sessionLap
-	mapTelemetryPoints []*widget.Button
+	mapTelemetryPoints map[sessionLap][]*canvas.Circle
+
+	mapLastSelectedPacketId int64 = -404
+	mapLastSelectedSessionLap sessionLap = sessionLap{sessionId: 0, lapId: 0}
+
+	mapWidth float32 = resolutionWidth/2 + sideBarOffset
+	mapHeight float32 = resolutionHeight - bottomBarHeight
+
+	lapColors = []color.Color{color.NRGBA{R: 0, G: 0, B: 0, A: 255}, color.NRGBA{R: 0, G: 0, B: 255, A: 255}, color.NRGBA{R: 255, G: 255, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 0, A: 255}, color.NRGBA{R: 255, G: 255, B: 0, A: 255}, color.NRGBA{R: 0, G: 255, B: 255, A: 255}, color.NRGBA{R: 255, G: 0, B: 255, A: 255}}
+
+	legendContainer *fyne.Container
+
+	legendPoints []*canvas.Circle
+	legendLabels []*widget.Label
+
+	legendPointSize float32 = 20
 
 	graphContainer *fyne.Container
 
@@ -121,15 +143,15 @@ var (
 	totalSessions int64
 
 	currentSessionId int64 = 0
-	selectedLapIds []int64 = []int64{}
+	selectedSessionLaps []sessionLap = []sessionLap{}
 	currentLapId int64 = 0
 	currentPacketId int64 = 0
 
 	playing bool = false
 	forwardStep int64 = 10
 	backwardStep int64 = 10
-	defaultPlaybackSpeed int64 = 500
-	playbackSpeed int64 = 500
+	defaultPlaybackSpeed int64 = 100
+	playbackSpeed int64 = defaultPlaybackSpeed
 
 	defaultPacketStepInterval time.Duration = time.Millisecond * 1
 	nextPacketTimestamp time.Time = currentTime.Add(defaultPacketStepInterval)
@@ -226,8 +248,24 @@ func onStart() {
 	var mapBackgroundColor = color.NRGBA{R: 33, G: 33, B: 33, A: 255}
 
 	var mapBackgroundP fyne.CanvasObject = canvas.NewRectangle(mapBackgroundColor)
-	resizeObject(mapBackgroundP, resolutionWidth/2 + sideBarOffset, resolutionHeight - bottomBarHeight)
+	resizeObject(mapBackgroundP, mapWidth, mapHeight)
 	addObject(mapContainer, &mapBackgroundP, 0, 0)
+
+	mapTelemetryPoints = make(map[sessionLap][]*canvas.Circle)
+
+	legendContainer = container.NewWithoutLayout()
+	addContainer(mainContainer, legendContainer, resolutionWidth/2 + sideBarOffset - 145 -windowOffset, 80 -windowOffset)
+	containerItems[legendContainer] = []*fyne.CanvasObject{}
+	containerContainers[legendContainer] = []*fyne.Container{}
+
+	var legendBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 255}
+
+	var legendBackgroundP fyne.CanvasObject = canvas.NewRectangle(legendBackgroundColor)
+	resizeObject(legendBackgroundP, 150, 250)
+	addObject(legendContainer, &legendBackgroundP, 0, 0)
+
+	legendPoints = []*canvas.Circle{}
+	legendLabels = []*widget.Label{}
 
 	graphContainer = container.NewWithoutLayout()
 	addContainer(mainContainer, graphContainer, resolutionWidth/2 + sideBarOffset - windowOffset, -windowOffset)
@@ -356,6 +394,17 @@ func onStart() {
 	resizeObject(speedGraphTitleP, 100, 40)
 	addObject(speedGraphContainer, &speedGraphTitleP, 20, 10)
 
+	var playbackControlsBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 255}
+
+	playbackControlsContainer = container.NewWithoutLayout()
+	addContainer(mainContainer, playbackControlsContainer, resolutionWidth/2 + sideBarOffset - windowOffset, resolutionHeight - bottomBarHeight - windowOffset)
+	containerItems[playbackControlsContainer] = []*fyne.CanvasObject{}
+	containerContainers[playbackControlsContainer] = []*fyne.Container{}
+
+	var playbackControlsBackgroundP fyne.CanvasObject = canvas.NewRectangle(playbackControlsBackgroundColor)
+	resizeObject(playbackControlsBackgroundP, resolutionWidth/2 - sideBarOffset, bottomBarHeight)
+	addObject(playbackControlsContainer, &playbackControlsBackgroundP, 0, 0)
+
 	var graphSelectionBorderColor = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
 	var graphSelectionBorderWidth float32 = 2
 	var graphSelectionHeight float32 = 80
@@ -364,11 +413,11 @@ func onStart() {
 	graphSelectionContainer = container.NewWithoutLayout()
 	containerItems[graphSelectionContainer] = []*fyne.CanvasObject{}
 	containerContainers[graphSelectionContainer] = []*fyne.Container{}
-	addContainer(mainContainer, graphSelectionContainer, resolutionWidth/2 + sideBarOffset + graphSelectionSizeOffset/2 - windowOffset, resolutionHeight - bottomBarHeight - graphSelectionHeight - graphSelectionSizeOffset/2 - windowOffset)
+	addContainer(mainContainer, graphSelectionContainer, resolutionWidth/2 + sideBarOffset + graphSelectionSizeOffset/2 - windowOffset, resolutionHeight - bottomBarHeight + graphSelectionHeight/2 - windowOffset)
 
-	var emptyColor = color.NRGBA{R: 0, G: 0, B: 0, A: 0}
+	var graphSelectionBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 255}
 
-	var graphSelectionBorder *canvas.Rectangle = canvas.NewRectangle(emptyColor)
+	var graphSelectionBorder *canvas.Rectangle = canvas.NewRectangle(graphSelectionBackgroundColor)
 	var graphSelectionBorderP fyne.CanvasObject = graphSelectionBorder
 	graphSelectionBorder.StrokeColor = graphSelectionBorderColor
 	graphSelectionBorder.StrokeWidth = graphSelectionBorderWidth
@@ -379,39 +428,42 @@ func onStart() {
 	var checkHeightIniitalOffset float32 = 10
 	var checkHeightSpacing float32 = 30
 
+	var buttonWidth float32 = 200
+	var buttonHeight float32 = 20
+
 	var tireTempSelect *widget.Check = widget.NewCheck("Tire Temps", TireTempsCheckBoxChanged)
 	var tireTempSelectP fyne.CanvasObject = tireTempSelect
-	resizeObject(tireTempSelectP, 20, 20)
+	resizeObject(tireTempSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &tireTempSelectP, checkWidthInitalOffset, checkHeightIniitalOffset)
 
 	var tirePressureSelect *widget.Check = widget.NewCheck("Tire Pressures", TirePressuresCheckBoxChanged)
 	var tirePressureSelectP fyne.CanvasObject = tirePressureSelect
-	resizeObject(tirePressureSelectP, 20, 20)
+	resizeObject(tirePressureSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &tirePressureSelectP, checkWidthInitalOffset + 150, checkHeightIniitalOffset)
 
 	var brakeSelect *widget.Check = widget.NewCheck("Brake", BrakeCheckBoxChanged)
 	var brakeSelectP fyne.CanvasObject = brakeSelect
-	resizeObject(brakeSelectP, 20, 20)
+	resizeObject(brakeSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &brakeSelectP, checkWidthInitalOffset + 300, checkHeightIniitalOffset)
 
 	var throttleSelect *widget.Check = widget.NewCheck("Throttle", ThrottleCheckBoxChanged)
 	var throttleSelectP fyne.CanvasObject = throttleSelect
-	resizeObject(throttleSelectP, 20, 20)
+	resizeObject(throttleSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &throttleSelectP, checkWidthInitalOffset + 400, checkHeightIniitalOffset)
 
 	var steeringSelect *widget.Check = widget.NewCheck("Steering", SteeringCheckBoxChanged)
 	var steeringSelectP fyne.CanvasObject = steeringSelect
-	resizeObject(steeringSelectP, 20, 20)
+	resizeObject(steeringSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &steeringSelectP, checkWidthInitalOffset + 520, checkHeightIniitalOffset)
 
 	var accelerationSelect *widget.Check = widget.NewCheck("Acceleration", AccelerationCheckBoxChanged)
 	var accelerationSelectP fyne.CanvasObject = accelerationSelect
-	resizeObject(accelerationSelectP, 20, 20)
+	resizeObject(accelerationSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &accelerationSelectP, checkWidthInitalOffset, checkHeightIniitalOffset + checkHeightSpacing)
 
 	var speedSelect *widget.Check = widget.NewCheck("Speed", SpeedCheckBoxChanged)
 	var speedSelectP fyne.CanvasObject = speedSelect
-	resizeObject(speedSelectP, 20, 20)
+	resizeObject(speedSelectP, buttonWidth, buttonHeight)
 	addObject(graphSelectionContainer, &speedSelectP, checkWidthInitalOffset + 150, checkHeightIniitalOffset + checkHeightSpacing)
 
 	currentInfoLabel = widget.NewLabel("Session , Lap , Packet ")
@@ -467,17 +519,6 @@ func onStart() {
 	resizeObject(lapSelectLapEntryP, 300, 40)
 	addObject(lapSelectContainer, &lapSelectLapEntryP, (resolutionWidth + sideBarOffset)/2 - 300*1.5 + 200 + lapSelectItemWidthOffset, bottomBarHeight/2)
 
-	var playbackControlsBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 255}
-
-	playbackControlsContainer = container.NewWithoutLayout()
-	addContainer(mainContainer, playbackControlsContainer, resolutionWidth/2 + sideBarOffset - windowOffset, resolutionHeight - bottomBarHeight - windowOffset)
-	containerItems[playbackControlsContainer] = []*fyne.CanvasObject{}
-	containerContainers[playbackControlsContainer] = []*fyne.Container{}
-
-	var playbackControlsBackgroundP fyne.CanvasObject = canvas.NewRectangle(playbackControlsBackgroundColor)
-	resizeObject(playbackControlsBackgroundP, resolutionWidth/2 - sideBarOffset, bottomBarHeight)
-	addObject(playbackControlsContainer, &playbackControlsBackgroundP, 0, 0)
-
 	mainWindow.Canvas().SetContent(mainContainer)
 	//endregion
 
@@ -489,6 +530,14 @@ func onStart() {
 		var containerToMove = graphContainer
 
 		switch key.Name {
+			case fyne.KeyUp:
+				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] - moveSpeed)
+			case fyne.KeyDown:
+				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0], containerOffsets[mapContainer][1] + moveSpeed)
+			case fyne.KeyLeft:
+				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] - moveSpeed, containerOffsets[mapContainer][1])
+			case fyne.KeyRight:
+				moveContainer(mainContainer, mapContainer, containerOffsets[mapContainer][0] + moveSpeed, containerOffsets[mapContainer][1])
 			case fyne.KeyS:
 				if containerOffsets[containerToMove][1] + moveSpeed > resolutionHeight * -1 {
 					moveContainer(containerHead, containerToMove, containerOffsets[containerToMove][0], containerOffsets[containerToMove][1] - moveSpeed)
@@ -583,7 +632,7 @@ func onUpdate(deltaTime time.Duration) {
 	currentTime = currentTime.Add(deltaTime)
 
 	if playing && currentTime.Compare(nextPacketTimestamp) >= 0 {
-		nextPacketTimestamp = nextPacketTimestamp.Add(defaultPacketStepInterval * time.Duration(playbackSpeed))
+		nextPacketTimestamp = currentTime.Add(defaultPacketStepInterval * time.Duration(playbackSpeed))
 		
 		maxPacketId := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}][1]
 		if currentPacketId + 1 <= maxPacketId {
@@ -591,41 +640,37 @@ func onUpdate(deltaTime time.Duration) {
 		}
 	}
 
-	checkSelectedSessionLap()
+	checkSelectedLaps()
 	refreshLabels()
 	refreshMaps()
 	refreshGraphs()
 }
 
-func checkSelectedSessionLap() {
+func checkSelectedLaps() {
 	selectedSessionId, sessionErr := strconv.ParseInt(lapSelectSessionEntry.Text, 10, 64)
 	if sessionErr != nil {
 		return
 	} 
+
+	var lapInSelected bool = false
 	
-	lapsSelected := []int64{}
+	sessionLapsSelected := []sessionLap{}
 	for _, splitString := range strings.Split(lapSelectLapEntry.Text, ",") {
 		lap, err := strconv.ParseInt(strings.ReplaceAll(strings.ReplaceAll(splitString, " ", ""), "	", ""), 10, 64)
 		if err != nil {
 			return
 		}
-		lapsSelected = append(lapsSelected, lap)
+		lapInSelected = lapInSelected || lap == currentLapId
+		sessionLapsSelected = append(sessionLapsSelected, sessionLap{sessionId: selectedSessionId, lapId: lap})
 	}
 
-	if selectedSessionId != currentSessionId {
+	if (currentSessionId != selectedSessionId || !lapInSelected) && len(sessionLapsSelected) > 0 {
 		currentSessionId = selectedSessionId
-		var minLap int64 = 9223372036854775807
-		for _, lap := range lapsSelected {
-			if lap < minLap {
-				minLap = lap
-			}
-		}
-		currentLapId = minLap
-		currentPacketId = packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}][0]
-	} else {
-		selectedLapIds = append(selectedLapIds, currentLapId)
+		currentLapId = sessionLapsSelected[0].lapId
+		currentPacketId = packetIdsBySessionLap[sessionLapsSelected[0]][0]
 	}
-	selectedLapIds = lapsSelected
+
+	selectedSessionLaps = sessionLapsSelected
 }
 
 func refreshLabels() {
@@ -634,21 +679,182 @@ func refreshLabels() {
 	lapSelectTotalLaps.SetText(fmt.Sprintf("%d laps", len(lapsBySession[currentSessionId])))
 }
 
-
 func refreshMaps() {
+	lapsNeededToGenerate := []sessionLap{}
+	lapsNeededToDestroy := []sessionLap{}
+
+	if len(mapActiveSessionLaps) > 0 && mapActiveSessionLaps[0].sessionId == currentSessionId {
+		for _, activeSessionLap := range mapActiveSessionLaps {
+			if !slices.Contains(selectedSessionLaps, activeSessionLap) {
+				lapsNeededToDestroy = append(lapsNeededToDestroy, activeSessionLap)
+			}
+		}
+		for _, x := range selectedSessionLaps {
+			if !slices.Contains(mapActiveSessionLaps, x) {
+				bounds, inDict := packetIdsBySessionLap[x]
+				if inDict && (bounds[0] - bounds[1]) != 0 {
+					lapsNeededToGenerate = append(lapsNeededToGenerate, x)
+				}
+			}
+		}
+	} else {
+		for _, x := range selectedSessionLaps {
+			bounds, inDict := packetIdsBySessionLap[x]
+			if inDict && (bounds[0] - bounds[1]) != 0 {
+				lapsNeededToGenerate = append(lapsNeededToGenerate, x)
+			}
+		}
+		lapsNeededToDestroy = mapActiveSessionLaps
+	}
+
+	for _, sessionLapsToDestroy := range lapsNeededToDestroy {
+		circlesToDestroy, inDict := mapTelemetryPoints[sessionLapsToDestroy]
+		if !inDict {
+			fmt.Println("Circles Not found for given sessionLap")
+			os.Exit(1)
+		}
+
+		for _, circle := range circlesToDestroy {
+			circle.Hidden = true
+			graphContainer.Remove(circle)
+		}
+
+		indexInActiveSessionLaps := 0
+		for index, x := range mapActiveSessionLaps {
+			if x == sessionLapsToDestroy {
+				indexInActiveSessionLaps = index
+			}
+		} 
+		mapActiveSessionLaps[indexInActiveSessionLaps] = mapActiveSessionLaps[len(mapActiveSessionLaps) -1]
+		mapActiveSessionLaps = mapActiveSessionLaps[:len(mapActiveSessionLaps) -1]
+		
+		delete(mapTelemetryPoints, sessionLapsToDestroy)
+	}
+
+	colorPicker := make(map[sessionLap]color.Color)
+
+	for index, x := range selectedSessionLaps {
+		var lapColor color.Color
+		if index > len(lapColors) {
+			lapColor = color.White
+		} else {
+			lapColor = lapColors[index]
+
+		colorPicker[x] = lapColor
+		}
+	}
+
+	if len(lapsNeededToGenerate) > 0 || len(lapsNeededToDestroy) > 0 {
+		for _, x := range legendPoints {
+			legendContainer.Remove(x)
+		}
+
+		for _, x := range legendLabels {
+			legendContainer.Remove(x)
+		}
+
+		for index, x := range selectedSessionLaps {
+			var newlegendPoint *canvas.Circle = canvas.NewCircle(colorPicker[x])
+			var newlegendPointP fyne.CanvasObject = newlegendPoint
+			resizeObject(newlegendPointP, legendPointSize, legendPointSize)
+			addObject(legendContainer, &newlegendPointP, 20, float32(index) * 40 + 40)
+			legendPoints = append(legendPoints, newlegendPoint)
+
+			var newLegendLabel *widget.Label = widget.NewLabel(fmt.Sprintf("Lap %d", x.lapId))
+			var newLegendLabelP fyne.CanvasObject = newLegendLabel
+			resizeObject(newLegendLabelP, 80, 40)
+			addObject(legendContainer, &newLegendLabelP, 40, float32(index) * 40 + 30)
+			legendLabels = append(legendLabels, newLegendLabel)
+		}
+	}
+
+	for _, sessionLapToGenerate := range lapsNeededToGenerate {
+		//legendPoints
+		//legendLabels
+
+		packetsBounds := packetIdsBySessionLap[sessionLapToGenerate]
+		packets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetsBounds[0], packetsBounds[1])
+		 
+		lapCircles := []*canvas.Circle{}
+
+		var minX float64 = math.MaxFloat32
+		var minY float64 = math.MaxFloat32
+		var maxX float64 = -math.MaxFloat32
+		var maxY float64 = -math.MaxFloat32
+
+		for _, packet := range *packets {
+			location := packet.Location
+			if location[0] < minX { minX = location[0] }
+			if location[0] > maxX { maxX = location[0] }
+			if location[1] < minY { minY = location[1] }
+			if location[1] > maxY { maxY = location[1] }
+		}
+
+		var mapOffset float32 = 250
+		var mapIncrease float32 = 1.5
+
+		var nextPacketToDraw = 0
+
+		for index, packet := range *packets {
+			if index == nextPacketToDraw {
+				nextPacketToDraw += packetInterval
+				var newCircle *canvas.Circle = canvas.NewCircle(colorPicker[sessionLapToGenerate])
+				newCircle.Resize(fyne.NewSize(1, 1))
+				newCircle.StrokeWidth = 1
+				var newCircleP fyne.CanvasObject = newCircle
+				resizeObject(newCircleP, defaultCircleSize, defaultCircleSize)
+				var packetX float32 = float32(packet.Location[0] * (float64(mapWidth/2))/(maxX - minX)) - float32(minX)
+				var packetY float32 = float32(packet.Location[1] * (float64(mapHeight/2))/(maxY - minY)) - float32(minY)/2
+				addObject(mapContainer, &newCircleP, packetX * mapIncrease - mapOffset, packetY * mapIncrease - mapOffset)
+
+				lapCircles = append(lapCircles, newCircle)
+			}
+		}
+
+		mapTelemetryPoints[sessionLapToGenerate] = lapCircles
+		if !slices.Contains(mapActiveSessionLaps, sessionLapToGenerate) {
+			mapActiveSessionLaps = append(mapActiveSessionLaps, sessionLapToGenerate)
+		}
+	}
 	
+	if currentPacketId != mapLastSelectedPacketId {
+		packetBounds := packetIdsBySessionLap[mapLastSelectedSessionLap]
+
+		selectedIndex := int(mapLastSelectedPacketId - packetBounds[0])/packetInterval
+		for index, circle := range mapTelemetryPoints[mapLastSelectedSessionLap] {
+			if index == selectedIndex {
+				resizeObject(circle, defaultCircleSize, defaultCircleSize)
+				circle.Move(circle.Position().AddXY(defaultCircleSize * selectedCircleSizeIncrease/2, defaultCircleSize * selectedCircleSizeIncrease/2))
+			}
+		}
+
+		currentSessionLap := sessionLap{sessionId: currentSessionId, lapId: currentLapId}
+
+		packetBounds = packetIdsBySessionLap[currentSessionLap]
+
+		selectedIndex = int(currentPacketId - packetBounds[0]/int64(packetInterval))
+		for index, circle := range mapTelemetryPoints[currentSessionLap] {
+			if index == selectedIndex {
+				resizeObject(circle, defaultCircleSize * selectedCircleSizeIncrease, defaultCircleSize * selectedCircleSizeIncrease)
+				circle.Move(circle.Position().SubtractXY(defaultCircleSize * selectedCircleSizeIncrease/2, defaultCircleSize * selectedCircleSizeIncrease/2))
+			}
+		}
+
+		mapLastSelectedPacketId = currentPacketId
+		mapLastSelectedSessionLap = sessionLap{sessionId: currentSessionId, lapId: currentLapId}
+	}
 }
 
 func refreshGraphs() {
-	packetIds := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}]
-	telemetryPackets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetIds[0], packetIds[1])
+	// packetIds := packetIdsBySessionLap[sessionLap{sessionId: currentSessionId, lapId: currentLapId}]
+	// telemetryPackets := databaseAPI.QueryBetweenIdsFromPool(dbConnection, packetIds[0], packetIds[1])
 
-	speedArray := []float64{}
-	for _, packet := range *telemetryPackets {
-		speedArray = append(speedArray, packet.Velocity)
-	}
+	// speedArray := []float64{}
+	// for _, packet := range *telemetryPackets {
+	// 	speedArray = append(speedArray, packet.Velocity)
+	// }
 
-	drawGraph(speedGraphContainer, speedArray, 50, -10)
+	// drawGraph(speedGraphContainer, speedArray, 50, -10)
 }
 
 func drawGraph(container *fyne.Container, data []float64, maxScale, minScale float64) {

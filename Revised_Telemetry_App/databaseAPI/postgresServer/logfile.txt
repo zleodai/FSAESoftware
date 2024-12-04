@@ -155,3 +155,24 @@
 2024-12-03 23:21:00.525 PST [24804] LOG:  redo starts at 0/1A34E50
 2024-12-03 23:21:00.527 PST [11480] LOG:  shutting down
 2024-12-03 23:21:00.531 PST [129856] LOG:  database system is shut down
+2024-12-03 23:21:58.790 PST [131420] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-03 23:21:58.792 PST [131420] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-03 23:21:58.793 PST [131420] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-03 23:21:58.811 PST [17140] LOG:  database system was shut down in recovery at 2024-12-03 23:21:00 PST
+2024-12-03 23:21:58.811 PST [17140] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-03 23:21:58.813 PST [17140] LOG:  redo starts at 0/1A34E50
+2024-12-03 23:21:58.813 PST [17140] LOG:  invalid record length at 0/1A34F58: expected at least 24, got 0
+2024-12-03 23:21:58.813 PST [17140] LOG:  redo done at 0/1A34F20 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-12-03 23:21:58.815 PST [269412] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-12-03 23:21:58.820 PST [269412] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.006 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1A34F58, redo lsn=0/1A34F58
+2024-12-03 23:21:58.827 PST [131420] LOG:  database system is ready to accept connections
+2024-12-04 00:58:32.094 PST [269540] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 01:00:13.336 PST [278440] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 01:00:45.786 PST [278480] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 01:02:31.885 PST [276000] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2024-12-04 01:03:39.200 PST [277448] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
