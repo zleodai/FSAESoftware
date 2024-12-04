@@ -261,7 +261,7 @@ func onStart() {
 	containerItems[legendContainer] = []*fyne.CanvasObject{}
 	containerContainers[legendContainer] = []*fyne.Container{}
 
-	var legendBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 255}
+	var legendBackgroundColor = color.NRGBA{R: 25, G: 25, B: 25, A: 100}
 
 	var legendBackgroundP fyne.CanvasObject = canvas.NewRectangle(legendBackgroundColor)
 	resizeObject(legendBackgroundP, 150, 250)
