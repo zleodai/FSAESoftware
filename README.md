@@ -23,7 +23,7 @@ The Telemetry App is designed to provide real-time and historical data monitorin
 - **Operating System:** Windows 10 or higher
 - **Hardware:**
   - Minimum 4 GB RAM
-- **Software:**
+- **Dependencies:**
   - PostgreSQL (for database management)
   - Go programming language runtime
   - Fyne.io framework (included with the app)
