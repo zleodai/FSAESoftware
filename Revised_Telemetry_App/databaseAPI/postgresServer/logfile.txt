@@ -229,3 +229,43 @@
 	
 2024-12-04 15:42:37.492 PST [33800] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
 	
+2024-12-05 21:28:14.403 PST [26704] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-05 21:28:14.405 PST [26704] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-05 21:28:14.405 PST [26704] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-05 21:28:14.432 PST [47004] LOG:  database system was interrupted; last known up at 2024-12-04 14:18:24 PST
+2024-12-05 21:28:19.838 PST [47004] LOG:  could not open file "./logfile.txt": sharing violation
+2024-12-05 21:28:19.838 PST [47004] DETAIL:  Continuing to retry for 30 seconds.
+2024-12-05 21:28:19.838 PST [47004] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2024-12-05 21:28:44.834 PST [47004] LOG:  syncing data directory (fsync), elapsed time: 30.40 s, current path: ./pg_commit_ts
+2024-12-05 21:28:44.843 PST [47004] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-12-05 21:28:44.846 PST [47004] LOG:  redo starts at 0/2305198
+2024-12-05 21:28:44.846 PST [47004] LOG:  invalid record length at 0/23052A0: expected at least 24, got 0
+2024-12-05 21:28:44.846 PST [47004] LOG:  redo done at 0/2305268 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-12-05 21:28:44.849 PST [44636] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-12-05 21:28:44.855 PST [44636] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.007 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/23052A0, redo lsn=0/23052A0
+2024-12-05 21:28:44.864 PST [26704] LOG:  database system is ready to accept connections
+2024-12-05 22:54:27.241 PST [26704] LOG:  received fast shutdown request
+2024-12-05 22:54:27.242 PST [26704] LOG:  aborting any active transactions
+2024-12-05 22:54:27.245 PST [26704] LOG:  background worker "logical replication launcher" (PID 34908) exited with exit code 1
+2024-12-05 22:54:27.245 PST [44636] LOG:  shutting down
+2024-12-05 22:54:27.246 PST [44636] LOG:  checkpoint starting: shutdown immediate
+2024-12-05 22:54:27.250 PST [44636] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/2305350, redo lsn=0/2305350
+2024-12-05 22:54:27.253 PST [26704] LOG:  database system is shut down
+2024-12-10 14:25:56.247 PST [11752] LOG:  starting PostgreSQL 17.0 on x86_64-windows, compiled by msvc-19.41.34120, 64-bit
+2024-12-10 14:25:56.250 PST [11752] LOG:  listening on IPv6 address "::1", port 5432
+2024-12-10 14:25:56.250 PST [11752] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-12-10 14:25:56.272 PST [91812] LOG:  database system was shut down at 2024-12-05 22:54:27 PST
+2024-12-10 14:25:56.283 PST [11752] LOG:  database system is ready to accept connections
+2024-12-10 14:30:56.275 PST [34208] LOG:  checkpoint starting: time
+2024-12-10 14:30:56.282 PST [34208] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.008 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/2305458, redo lsn=0/2305400
+2024-12-10 14:33:46.758 PST [11752] LOG:  received fast shutdown request
+2024-12-10 14:33:46.759 PST [11752] LOG:  aborting any active transactions
+2024-12-10 14:33:46.759 PST [93780] ERROR:  canceling statement due to user request
+2024-12-10 14:33:46.759 PST [93780] STATEMENT:  select id, lap_id, date_entry, time_step, tire_temps, tire_pressures, velocity, location, accelerator_input, brake_input, steering_angle, gyro_pitch, gyro_yaw, gyro_roll, x_acceleration, y_acceleration, z_acceleration, total_power_draw, active_suspension_power_draw, motor_power_draw, battery_voltage, traction_loss, abs_throttle_limiting, limited_slip_usage from telemetry where id between $1 and $2
+2024-12-10 14:33:46.759 PST [87720] ERROR:  canceling statement due to user request
+2024-12-10 14:33:46.760 PST [93780] FATAL:  terminating connection due to administrator command
+2024-12-10 14:33:46.761 PST [11752] LOG:  background worker "logical replication launcher" (PID 87720) exited with exit code 1
+2024-12-10 14:33:46.762 PST [34208] LOG:  shutting down
+2024-12-10 14:33:46.763 PST [34208] LOG:  checkpoint starting: shutdown immediate
+2024-12-10 14:33:46.767 PST [34208] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/2305508, redo lsn=0/2305508
+2024-12-10 14:33:46.779 PST [11752] LOG:  database system is shut down
