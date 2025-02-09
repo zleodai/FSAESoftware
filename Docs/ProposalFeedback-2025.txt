@@ -1,0 +1,23 @@
+CMSI 4072 Spring 2025
+Project Proposal Feedback
+Project: Trackside Car Software
+=========================
+Proposal Document [2 points]:
+   This is the same document as last semester.  You were supposed to update
+   the document with an explanation of what you got done last time and what
+   you're planning this time.  Just copy/pasting the same document is NOT
+   what was required.  Sorry.
+
+Proposal Presentation [3 points]:
+   Very nice work on the updated presentation.  You have clearly defined the
+   activities you'll be adding.  The graphics are pretty good, and you are
+   telling a story with the way the slide data are arranged so you keep the
+   audience engaged.  You all did a pretty good job of maintaining eye
+   contact with the audience, too.
+
+Summary:
+--------
+Total:  3% out of 5% for this deliverable.
+
+Be sure you are reading the requirements for the deliverables CAREFULLY so
+you will know what you're supposed to be doing for each one.
