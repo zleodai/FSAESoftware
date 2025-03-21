@@ -1,0 +1,55 @@
+
+Continuing Group Project
+Documentation Feedback ~ Deliverable #3
+Initial Test Procedure Document
+CMSI 4072 Spring 2025
+=======================================
+
+LIST OF REQUIREMENTS/ACCEPTANCE CRITERIA:
+   You have the requirements listed for section 5.4 but not for section 5.3,
+   which is the main functional requirements that your test procedure should
+   be checking out.  Good start using the VCRM, though...
+
+SOFTWARE START-UP PROCEDURE:
+   Not provided but not specifically required for this document.
+
+TEST STEP FOR EACH REQUIREMENT/CRITERIA:
+   We need some steps here!  How do we start the software?  How do we run
+   the tests?  What results to we expect to see from them?  There should be
+   a specific test for each requirement, or if multiple requirements are to
+   be tested with a single test, that test should be associated with all of
+   those requirements somehow.
+
+
+OVERALL ASSESSMENT:
+   Category                          Points
+   Requirements/Criteria List          1/2
+   Software start-up procedure         2/2
+   Test step ea. requirement/crit.     4/6
+                                     =====
+   Subtotal                           7/10
+   ------------------------------------------------------
+   Total Percentage:   7/10 = 7% which is a C on this deliverable
+
+Off to a good start, but be sure to update this document and add in the tests
+that are mentioned above so that it is an actual *procedure*.  Think about it
+like a checklist.
+
+
+----------------------------------------------------------------------------
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+----------------------------------------------------------------------------
+
+Documentation Feedback ~ Deliverable #5
+Test Procedure Document Complete
+============================================
+
+OVERALL ASSESSMENT:
+           Category                                Points
+   Comments from first submission incorporated       8/8
+   Spelling and Grammar in document acceptable       2/2
+                                                   =====
+   Subtotal                                        10/10
+   ------------------------------------------------------
+   Total Percentage:   10/10 = 100% which is an A-plus

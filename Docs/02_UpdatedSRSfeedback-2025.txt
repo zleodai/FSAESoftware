@@ -1,0 +1,43 @@
+
+Continuing Group Project
+Documentation Feedback ~ Deliverable #2
+Updated Software Requirements Specification
+   Initial Development Schedule
+CMSI 4072 Spring 2025
+===========================================
+
+COMPONENT BREAKDOWN:
+   New components added 2nd semester [y/n]
+
+FUNCTIONAL REQUIREMENTS:
+   New requirements added 2nd semester [y/n]
+   New requirements adequate [y/n]
+
+   This is the same document as last semester.  You were supposed to update
+   it with requirements for what you will be adding this semester.  I don't
+   see anything different in a binary comparison of the requirements from
+   these two repositories.
+
+PERFORMANCE REQUIREMENTS:
+   New requirements added 2nd semester [y/n]
+   New requirements adequate [y/n]
+
+   No updates
+
+OVERALL ASSESSMENT:
+   Category                          Points
+   Component Breakdown                 1/1
+   Functional Requirements             2/4
+   Performance Requirements            1/2
+   Environment Requirements            1/1
+                                     =====
+   Subtotal                            5/8
+   Preliminary 2nd semester schedule   0/2
+   ------------------------------------------------------
+   Total Percentage:   5/10 = 50% which is an F on this deliverable
+
+COMMENTS:
+---------
+There are no updates to your original SRS as you were supposed to do.  There
+   also is no updated or new development schedule, which I would think you
+   might want to have, so you can track your progress, right?  ;)
