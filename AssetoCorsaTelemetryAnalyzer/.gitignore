@@ -9,19 +9,6 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
-# Custom
-.vscode/
-*.meta
-/[Aa]ssets/[Bb]lender/
-*.blend
-/[Aa]ssets/[Mm]odels/
-/[Aa]ssets/[Tt]extures/
-/[Aa]ssets/[Ss]prites/
-/[Aa]ssets/[Ff]onts/
-/[Aa]ssets/[Ss]kyboxes/
-/[Aa]ssets/[Ss]ounds/
-/[Aa]ssets/TextMesh\ Pro/
-
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
