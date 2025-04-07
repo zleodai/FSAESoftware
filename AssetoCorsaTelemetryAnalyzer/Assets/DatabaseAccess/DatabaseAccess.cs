@@ -33,6 +33,8 @@ public class DatabaseAccess : MonoBehaviour {
     public Dictionary<long, Packet> RecievedPackets = new Dictionary<long, Packet>();
     public Dictionary<(int, int), LapInfo> RecievedSessionLaps = new Dictionary<(int, int), LapInfo>();
 
+    private int queryButtonCounter;
+
     public readonly struct PacketInfo {
         public PacketInfo(long packetID, int sessionID, int lapID, DateTime dateTime) {
             PacketID = packetID;
@@ -218,19 +220,9 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     public void GetQueryButtonClick() {
-        StartCoroutine(getRequest(getQueryString(1, 1, 100)));
-        StartCoroutine(getRequest(getQueryString(2, 0, 0)));
-        StartCoroutine(getRequest(getQueryString(3, 1, 100)));
-        StartCoroutine(getRequest(getQueryString(4, 1, 100)));
-
-        foreach (KeyValuePair<long, Packet> entry in RecievedPackets) {
-            log(entry.Value + "\n");
-        }
-
-        Debug.Log(RecievedSessionLaps.Count);
-        foreach (KeyValuePair<(int, int), LapInfo> entry in RecievedSessionLaps) {
-            log(entry.Value + "\n");
-        }
+        StartCoroutine(getRequest(getQueryString(1, queryButtonCounter, queryButtonCounter)));
+        StartCoroutine(getRequest(getQueryString(3, queryButtonCounter, queryButtonCounter)));
+        StartCoroutine(getRequest(getQueryString(4, queryButtonCounter, queryButtonCounter)));
     }
 
     public void QueryPackets(long packetIDStart, long packetIDEnd) {
@@ -252,11 +244,11 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     void Start() {
-        //terminalStart();
+        terminalStart();
     }
 
     void Update() {
-        //terminalUpdate();
+        terminalUpdate();
 
         if (gotPacketDataList && gotTelemetryDataList && gotTireDataList) {
             gotPacketDataList = false;
@@ -269,6 +261,9 @@ public class DatabaseAccess : MonoBehaviour {
                     TelemetryInfo telemetryData = recievedTelemetryDataList[i];
                     TireInfo tireData = recievedTireDataList[i];
                     RecievedPackets[packetData.PacketID] = new Packet(packetData, telemetryData, tireData);
+                    if (terminalActive && packetData.PacketID == queryButtonCounter) {
+                        log($"{RecievedPackets[queryButtonCounter++]}\n");
+                    }
                 }
             } else {
                 Debug.Log($"Error Got Mismatched Lengths packetDataList {recievedPacketDataList.Count} items, telemetryDataList {recievedTelemetryDataList.Count} items, tireDataList {recievedTireDataList.Count} items");
@@ -420,6 +415,8 @@ public class DatabaseAccess : MonoBehaviour {
         scrollAction.Enable();
         scrollAction.performed += x => { terminalLineP += (int)x.ReadValue<Vector2>()[1]; terminalStateChanged = true; };
         terminalActive = true;
+
+        queryButtonCounter = 1;
     }
 
     private void terminalUpdate() {

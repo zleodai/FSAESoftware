@@ -245,7 +245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &117036283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,7 +364,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -16.0552}
-  m_SizeDelta: {x: 760, y: 523.8899}
+  m_SizeDelta: {x: 1900, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &177668145
 MonoBehaviour:
@@ -702,7 +702,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 600}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &594446363
 MonoBehaviour:
@@ -804,7 +804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &833134212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1309,7 +1309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b341db95389d864abdc212b57733717, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Terminal: {fileID: 0}
+  Terminal: {fileID: 117036285}
   terminalLineP: 0
 --- !u!1 &1629552604
 GameObject:
@@ -1326,7 +1326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1629552605
 Transform:
   m_ObjectHideFlags: 0
@@ -1379,7 +1379,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: 230.89}
+  m_AnchoredPosition: {x: 851, y: 498.94}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1962170964
@@ -1426,8 +1426,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: DatabaseAccessScript, Assembly-CSharp
+      - m_Target: {fileID: 1539532527}
+        m_TargetAssemblyTypeName: DatabaseAccess, Assembly-CSharp
         m_MethodName: GetQueryButtonClick
         m_Mode: 1
         m_Arguments:
