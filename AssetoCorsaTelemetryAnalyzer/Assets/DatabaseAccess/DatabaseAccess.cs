@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 public class DatabaseAccess : MonoBehaviour {
     public static DatabaseAccess Instance { get; private set; }
-
+    
     public Canvas Terminal;
     private TextMeshProUGUI outputTextBox;
 
@@ -34,6 +34,9 @@ public class DatabaseAccess : MonoBehaviour {
     public Dictionary<(int, int), LapInfo> RecievedSessionLaps = new Dictionary<(int, int), LapInfo>();
 
     private int queryButtonCounter;
+
+    [Header("Options")]
+    public bool LogFetchOutput;
 
     public readonly struct PacketInfo {
         public PacketInfo(long packetID, int sessionID, int lapID, DateTime dateTime) {
@@ -220,9 +223,13 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     public void GetQueryButtonClick() {
-        StartCoroutine(getRequest(getQueryString(1, queryButtonCounter, queryButtonCounter)));
-        StartCoroutine(getRequest(getQueryString(3, queryButtonCounter, queryButtonCounter)));
-        StartCoroutine(getRequest(getQueryString(4, queryButtonCounter, queryButtonCounter)));
+        StartCoroutine(getRequest(getQueryString(1, 0, 100)));
+        StartCoroutine(getRequest(getQueryString(3, 0, 100)));
+        StartCoroutine(getRequest(getQueryString(4, 0, 100)));
+    }
+
+    public void InsertDataButtonClick() {
+        randomInsert();
     }
 
     public void QueryPackets(long packetIDStart, long packetIDEnd) {
@@ -312,6 +319,11 @@ public class DatabaseAccess : MonoBehaviour {
                     break;
                 case UnityWebRequest.Result.Success:
                     string[] packetStrings = webRequest.downloadHandler.text.Split("\n");
+
+                    if (LogFetchOutput) { 
+                        Debug.Log($"GET: {string.Join(", ", packetStrings)}"); 
+                    }
+
                     if (packetStrings.Length > 0) {
                         switch (packetStrings[0].Split(",").Length) {
                             case 4:

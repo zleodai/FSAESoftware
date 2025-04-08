@@ -1,8 +1,11 @@
 <?php
-$serverName = "localhost"; 
-$uid = "TelemetryDBUser";   
-$pwd = "123";  
-$databaseName = "TelemetryDB"; 
+$env = parse_ini_file('.env');
+$user = $env["user"];
+$password = $env["password"];
+$host = $env["host"];
+$port = $env["port"];
+$dbname = $env["dbname"];
+
 $privateKey = "945";
 
 //Insert types
@@ -17,17 +20,16 @@ $lapID = (int)$_GET["LapID"];
 $calculatedKey = (int)hash('sha256', $insertType * $privateKey * ($sessionID + $lapID));
 
 if ($publicKey == $calculatedKey) {
-    $conn = new mysqli('localhost', 'TelemetryDBUser', '123', 'TelemetryDB', '3306');
-
-    if ($conn->connect_error) {
-        error_log('MySQL Connect Error (' . $conn->connect_errno . ') '
-                . $conn->connect_error);
+    $conn = pg_connect(sprintf("user=%s password=%s host=%s port=%s dbname=%s", $user, $password, $host, $port, $dbname));
+    if (!$conn) {
+        error_log('Connection to Postgresql database failed');
+        exit;
     }
 
     $insertQueries;
 
     if ( $insertType == 1 ) {
-        $packetID = $conn->query("SELECT MAX(PacketID) FROM PacketInfo")->fetch_array()[0];
+        $packetID = pg_fetch_row(pg_query($conn, "SELECT MAX(PacketID) FROM PacketInfo"))[0];
 
         if (is_null($packetID)) {
             $packetID = 1;
@@ -103,9 +105,9 @@ if ($publicKey == $calculatedKey) {
 
         $insertQueries = array($packetInfoInsert, $telemetryInfoInsert, $tireInfoInsert);
     } elseif ( $insertType == 2 ) {
-        $existingRequest = $conn->query(sprintf("SELECT SessionID FROM LapInfo WHERE SessionID=%s AND LapID=%s", $sessionID, $lapID))->fetch_array()[0];
+        $existingRequest = pg_fetch_row(pg_query($conn, sprintf("SELECT SessionID FROM LapInfo WHERE SessionID=%s AND LapID=%s", $sessionID, $lapID)))[0];
         if (!is_null($existingRequest)) {
-            $conn->query(sprintf("DELETE FROM LapInfo WHERE SessionID=%s AND LapID=%s", $sessionID, $lapID));
+            pg_query($conn, sprintf("DELETE FROM LapInfo WHERE SessionID=%s AND LapID=%s", $sessionID, $lapID));
         }
 
         $LapTime = $_GET["LapTime"];
@@ -127,10 +129,12 @@ if ($publicKey == $calculatedKey) {
 
     foreach ($insertQueries as $insertQuery) {
         echo $insertQuery;
-        $conn->query($insertQuery);
+        $result = pg_query($conn, $insertQuery);
+        if (!$result) {
+            error_log('Query Failed');
+            exit;
+        }
     }
-    
-    $conn->close();
 } else {
     echo "WrongKey";
 }
