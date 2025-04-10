@@ -229,7 +229,7 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     public void InsertDataButtonClick() {
-        randomInsert();
+        StartCoroutine(randomInsert());
     }
 
     public void QueryPackets(long packetIDStart, long packetIDEnd) {
@@ -278,29 +278,6 @@ public class DatabaseAccess : MonoBehaviour {
         }
     }
 
-    private IEnumerator debugRequest(string uri) {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri)) {
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
-            switch (webRequest.result)
-            {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    break;
-            }
-        }
-    }
-
     private IEnumerator getRequest(string uri) {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri)) {
             yield return webRequest.SendWebRequest();
@@ -308,9 +285,10 @@ public class DatabaseAccess : MonoBehaviour {
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
 
-            switch (webRequest.result)
-            {
+            switch (webRequest.result) {
                 case UnityWebRequest.Result.ConnectionError:
+                    Debug.LogError("Connection Error: " + webRequest.error);
+                    break;
                 case UnityWebRequest.Result.DataProcessingError:
                     Debug.LogError(pages[page] + ": Error: " + webRequest.error);
                     break;
@@ -374,40 +352,49 @@ public class DatabaseAccess : MonoBehaviour {
         }
     }
 
-    private void randomInsert() {
-        PacketInfo packetData = new PacketInfo(0, 0, 0, DateTime.Now);
-        LapInfo lapData = new LapInfo(0, 0, 0, "TestName", "TestTrack", "TestConfig", "TestCar");
-        TelemetryInfo telemetryData =  new TelemetryInfo(0, UnityEngine.Random.Range(0f, 100f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(-450f, 450f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(1, 7), UnityEngine.Random.Range(0f, 9000f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 10f), UnityEngine.Random.Range(0f, 10f), UnityEngine.Random.Range(0f, 10f), UnityEngine.Random.Range(0f, 50f), UnityEngine.Random.Range(0f, 50f), UnityEngine.Random.Range(0f, 50f), UnityEngine.Random.Range(-100f, 100f), UnityEngine.Random.Range(-100f, 100f), UnityEngine.Random.Range(-100f, 100f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
-        TireInfo tireData = new TireInfo(0, UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-45f, 45f), UnityEngine.Random.Range(-45f, 45f), UnityEngine.Random.Range(-45f, 45f), UnityEngine.Random.Range(-45f, 45f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(20f, 80f), UnityEngine.Random.Range(20f, 80f), UnityEngine.Random.Range(20f, 80f), UnityEngine.Random.Range(20f, 80f), UnityEngine.Random.Range(20f, 40f), UnityEngine.Random.Range(20f, 40f), UnityEngine.Random.Range(20f, 40f), UnityEngine.Random.Range(20f, 40f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+    private IEnumerator randomInsert() {
+        using (UnityWebRequest request = new UnityWebRequest("http://localhost:8080/csvInsert", UnityWebRequest.kHttpVerbPOST)) {
+            request.SetRequestHeader("Content-Type", "test/csv");
+            request.uploadHandler = new UploadHandlerFile("./telemetryData/RandomInsertData.csv");
 
-        StartCoroutine(getRequest(getInsertString(1, packetData, lapData, telemetryData, tireData)));
-        StartCoroutine(getRequest(getInsertString(2, packetData, lapData, telemetryData, tireData)));
-    }
+            yield return request.SendWebRequest();
 
-    private string getInsertString(int insertType, PacketInfo packetData = new PacketInfo(), LapInfo lapData = new LapInfo(), TelemetryInfo telemetryData = new TelemetryInfo(), TireInfo tireData = new TireInfo()) {
-        int sessionID = packetData.SessionID;
-        int lapID = packetData.LapID;
-        string publicKey = hashInput(String.Format("{0}", insertType * privateKey * (sessionID + lapID)));
-
-        switch (insertType) {
-            case 1:
-                return $"http://localhost:5432/insertIntoDatabase.php?publicKey={publicKey}&insertType={insertType}&SessionID={sessionID}&LapID={lapID}&SpeedMPH={telemetryData.SpeedMPH}&Gas={telemetryData.Gas}&Brake={telemetryData.Brake}&Steer={telemetryData.Steer}&Clutch={telemetryData.Clutch}&Gear={telemetryData.Gear}&RPM={telemetryData.RPM}&TurboBoost={telemetryData.TurboBoost}&LocalAngularVelocityX={telemetryData.LocalAngularVelocityX}&LocalAngularVelocityY={telemetryData.LocalAngularVelocityY}&LocalAngularVelocityZ={telemetryData.LocalAngularVelocityZ}&VelocityX={telemetryData.VelocityX}&VelocityY={telemetryData.VelocityY}&VelocityZ={telemetryData.VelocityZ}&WorldPositionX={telemetryData.WorldPositionX}&WorldPositionY={telemetryData.WorldPositionY}&WorldPositionZ={telemetryData.WorldPositionZ}&Aero_DragCoeffcient={telemetryData.Aero_DragCoeffcient}&Aero_LiftCoefficientFront={telemetryData.Aero_LiftCoefficientFront}&Aero_LiftCoefficientRear={telemetryData.Aero_LiftCoefficientRear}&FL_CamberRad={tireData.FL_CamberRad}&FR_CamberRad={tireData.FR_CamberRad}&RL_CamberRad={tireData.RL_CamberRad}&RR_CamberRad={tireData.RR_CamberRad}&FL_SlipAngle={tireData.FL_SlipAngle}&FR_SlipAngle={tireData.FR_SlipAngle}&RL_SlipAngle={tireData.RL_SlipAngle}&RR_SlipAngle={tireData.RR_SlipAngle}&FL_SlipRatio={tireData.FL_SlipRatio}&FR_SlipRatio={tireData.FR_SlipRatio}&RL_SlipRatio={tireData.RL_SlipRatio}&RR_SlipRatio={tireData.RR_SlipRatio}&FL_SelfAligningTorque={tireData.FL_SelfAligningTorque}&FR_SelfAligningTorque={tireData.FR_SelfAligningTorque}&RL_SelfAligningTorque={tireData.RL_SelfAligningTorque}&RR_SelfAligningTorque={tireData.RR_SelfAligningTorque}&FL_Load={tireData.FL_Load}&FR_Load={tireData.FR_Load}&RL_Load={tireData.RL_Load}&RR_Load={tireData.RR_Load}&FL_TyreSlip={tireData.FL_TyreSlip}&FR_TyreSlip={tireData.FR_TyreSlip}&RL_TyreSlip={tireData.RL_TyreSlip}&RR_TyreSlip={tireData.RR_TyreSlip}&FL_ThermalState={tireData.FL_ThermalState}&FR_ThermalState={tireData.FR_ThermalState}&RL_ThermalState={tireData.RL_ThermalState}&RR_ThermalState={tireData.RR_ThermalState}&FL_DynamicPressure={tireData.FL_DynamicPressure}&FR_DynamicPressure={tireData.FR_DynamicPressure}&RL_DynamicPressure={tireData.RL_DynamicPressure}&RR_DynamicPressure={tireData.RR_DynamicPressure}&FL_TyreDirtyLevel={tireData.FL_TyreDirtyLevel}&FR_TyreDirtyLevel={tireData.FR_TyreDirtyLevel}&RL_TyreDirtyLevel={tireData.RL_TyreDirtyLevel}&RR_TyreDirtyLevel={tireData.RR_TyreDirtyLevel}";
-            case 2:
-                return $"http://localhost:5432/insertIntoDatabase.php?publicKey={publicKey}&insertType={insertType}&SessionID={sessionID}&LapID={lapID}&LapTime={lapData.LapTime}&DriverName={lapData.DriverName}&TrackName={lapData.TrackName}&TrackConfiguration={lapData.TrackConfiguration}&CarName={lapData.CarName}";
-            default:
-                return "Error: insertType must be either 1 or 2.";
+            switch (request.result) {
+            case UnityWebRequest.Result.ConnectionError:
+                Debug.LogError("Connection Error: " + request.error);
+                break;
+            case UnityWebRequest.Result.DataProcessingError:
+                Debug.LogError("Error: " + request.error);
+                break;
+            case UnityWebRequest.Result.ProtocolError:
+                Debug.LogError("HTTP Error: " + request.error);
+                break;
+            case UnityWebRequest.Result.Success:
+                Debug.Log("Post Success: " + request.result);
+                break;
+            }
         }
     }
 
-    private string getQueryString(int queryType, long x, long y) {
+    private string getQueryString(int queryType, long start, long end) {
         //Query Types
         //1 = query PacketInfo from PackedID to PacketID
-        //2 = query LapInfo from SessionID and LapID
+        //2 = query LapInfo from LapID to LapID
         //3 = query TelemetryInfo from PacketID to PacketID
         //4 = query TireInfo from PacketID to PacketID
 
-        string publicKey = hashInput(String.Format("{0}", queryType * privateKey));
-        return $"http://localhost:5432/queryDatabase.php?publicKey={publicKey}&queryType={queryType}&x={x}&y={y}";
+        switch (queryType) {
+            case 1:
+                return $"http://localhost:8080/sqliteQuery?table=PacketInfo&start={start}&end={end}";
+            case 2:
+                return $"http://localhost:8080/sqliteQuery?table=LapInfo&start={start}&end={end}";
+            case 3:
+                return $"http://localhost:8080/sqliteQuery?table=TelemetryInfo&start={start}&end={end}";
+            case 4:
+                return $"http://localhost:8080/sqliteQuery?table=TireInfo&start={start}&end={end}";
+            default:
+                throw new Exception($"queryType of {queryType} unknown");
+        }
     }
 
     private string hashInput(string input) {
@@ -478,7 +465,3 @@ public class DatabaseAccess : MonoBehaviour {
         }   
     }
 }
-
-//TODO
-//Visualize data in unity
-//Add gui in unity to delete sessions
