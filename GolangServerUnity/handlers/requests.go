@@ -17,8 +17,7 @@ import (
 // SqliteQuery handles HTTP requests to query data from an SQLite database.
 // It expects 'start', 'end', and 'table' query parameters to define the data range and table to query.
 // It returns the query results as a JSON response.
-func SqliteQuery(w http.ResponseWriter, r *http.Request) {
-
+func SqliteQuery(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	start := r.URL.Query().Get("start")
 	end := r.URL.Query().Get("end")
 	table := r.URL.Query().Get("table")
@@ -28,21 +27,9 @@ func SqliteQuery(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	var query string
 	var rows *sql.Rows
+	var err error
 
 	switch table {
 	case "PacketInfo":
@@ -136,22 +123,9 @@ var tableSchemas = map[string][]string{
 // CsvInsert handles HTTP POST requests to insert CSV data into an SQLite database.
 // It reads CSV data from the request body and inserts it into the appropriate tables based on the headers.
 // It expects the CSV data to have a header row and at least one data row.
-func CsvInsert(w http.ResponseWriter, r *http.Request) {
+func CsvInsert(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
 		return
 	}
 
@@ -246,7 +220,7 @@ func CsvInsert(w http.ResponseWriter, r *http.Request) {
 // The function parses the JSON, identifies the relevant table for each column based on predefined schemas,
 // and inserts the data into the corresponding tables within a single transaction.
 // It responds with a success message or an error if insertion fails.
-func AddRow(w http.ResponseWriter, r *http.Request) {
+func AddRow(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
@@ -259,19 +233,6 @@ func AddRow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
-		return
-	}
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -327,25 +288,12 @@ func AddRow(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetSessionList handles GET requests to retrieve a list of sessions, optionally filtered by driver, track, car, and date range.
-func GetSessionList(w http.ResponseWriter, r *http.Request) {
+func GetSessionList(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	driver := r.URL.Query().Get("driver")
 	track := r.URL.Query().Get("track")
 	car := r.URL.Query().Get("car")
 	dateStart := r.URL.Query().Get("date_start")
 	dateEnd := r.URL.Query().Get("date_end")
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
-		return
-	}
 
 	query := `SELECT DISTINCT SessionID, DriverName, TrackName, TrackConfiguration, CarName FROM LapInfo WHERE 1=1` // 1=1 to easily append filters
 	var filters []string
@@ -405,25 +353,12 @@ func GetSessionList(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetLapList handles GET requests to retrieve a list of laps for a specific session.
-func GetLapList(w http.ResponseWriter, r *http.Request) {
+func GetLapList(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)             // gorilla mux
 	sessionID := vars["session_id"] // gorilla mux
 
 	if sessionID == "" {
 		http.Error(w, "Session ID is required", http.StatusBadRequest)
-		return
-	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
 		return
 	}
 
@@ -461,25 +396,12 @@ func GetLapList(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetFastestLap handles GET requests to find and return the fastest lap for a given session.
-func GetFastestLap(w http.ResponseWriter, r *http.Request) {
+func GetFastestLap(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)             // gorilla mux
 	sessionID := vars["session_id"] // gorilla mux
 
 	if sessionID == "" {
 		http.Error(w, "Session ID is required", http.StatusBadRequest)
-		return
-	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
 		return
 	}
 
@@ -490,7 +412,7 @@ func GetFastestLap(w http.ResponseWriter, r *http.Request) {
 	var lapID int
 	var lapTime int // Assuming LapTime is int, adjust if needed
 
-	err = row.Scan(&lapID, &lapTime)
+	err := row.Scan(&lapID, &lapTime)
 	if err == sql.ErrNoRows {
 		http.Error(w, fmt.Sprintf("No laps found for session %s", sessionID), http.StatusNotFound)
 		return
@@ -507,7 +429,7 @@ func GetFastestLap(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetLapComparisonData handles GET requests to retrieve telemetry data for multiple laps for comparison.
-func GetLapComparisonData(w http.ResponseWriter, r *http.Request) {
+func GetLapComparisonData(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	lapIDsStr := r.URL.Query().Get("lap_ids")
 	if lapIDsStr == "" {
 		http.Error(w, "Lap IDs are required", http.StatusBadRequest)
@@ -523,19 +445,6 @@ func GetLapComparisonData(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		lapIDs = append(lapIDs, id)
-	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-
-	err = helpers.SetupDatabaseSchema(db)
-	if err != nil {
-		http.Error(w, "Failed to setup database schema", http.StatusInternalServerError)
-		return
 	}
 
 	comparisonData := make(map[string][]map[string]interface{}) // Map of lapID -> telemetry data
@@ -579,7 +488,7 @@ func GetLapComparisonData(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteSession handles DELETE requests to remove a session and all associated data.
-func DeleteSession(w http.ResponseWriter, r *http.Request) {
+func DeleteSession(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)             // gorilla mux
 	sessionID := vars["session_id"] // gorilla mux
 
@@ -587,13 +496,6 @@ func DeleteSession(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Session ID is required", http.StatusBadRequest)
 		return
 	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -641,7 +543,7 @@ func DeleteSession(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteLap handles DELETE requests to remove a specific lap and its associated telemetry data.
-func DeleteLap(w http.ResponseWriter, r *http.Request) {
+func DeleteLap(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)        // gorilla mux
 	lapIDStr := vars["lap_id"] // gorilla mux
 	lapID, err := strconv.Atoi(lapIDStr)
@@ -649,13 +551,6 @@ func DeleteLap(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Lap ID", http.StatusBadRequest)
 		return
 	}
-
-	db, err := sql.Open("sqlite3", "./database.db")
-	if err != nil {
-		http.Error(w, "Failed to open database", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
 
 	tx, err := db.Begin()
 	if err != nil {
