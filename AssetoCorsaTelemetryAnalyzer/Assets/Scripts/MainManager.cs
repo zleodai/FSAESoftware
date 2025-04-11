@@ -28,6 +28,8 @@ public class MainManager : MonoBehaviour
         if (!Paused && localTime > playingStep) {
             playingStep = localTime + PlayingStepRate;
             SelectedPacketID += 1;
+            
+            DatabaseAccess.Instance.Log($"{DatabaseAccess.Instance.RecievedPackets[SelectedPacketID]}");
         }
     }
 }
