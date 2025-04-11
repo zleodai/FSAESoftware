@@ -20,7 +20,7 @@ func SetupDatabaseSchema(db *sql.DB) error {
 			DriverName TEXT,
 			TrackName TEXT,
 			TrackConfiguration TEXT,
-			CarName TEXT,
+			CarName TEXT
 		);
 
 		CREATE TABLE IF NOT EXISTS TelemetryInfo (

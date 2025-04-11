@@ -19,6 +19,7 @@ func main() {
 
 	err = helpers.SetupDatabaseSchema(db) // Setup schema once at startup
 	if err != nil {
+		log.Println("Error setting up database schema:", err)
 		log.Fatal(err)
 	}
 
