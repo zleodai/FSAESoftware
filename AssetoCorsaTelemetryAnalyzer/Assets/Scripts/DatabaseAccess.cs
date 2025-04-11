@@ -167,10 +167,16 @@ public class DatabaseAccess : MonoBehaviour {
             Instance = this;
         }
 
-        Process golangServer = new Process();
-        golangServer.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        golangServer.StartInfo.FileName = "goServer.exe";
-        golangServer.Start();
+        if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsServer) {
+            Process golangServer = new Process();
+            golangServer.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            golangServer.StartInfo.FileName = "goServer.exe";
+            golangServer.Start();
+        } else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXServer) {
+            Debug.Log("Hey stinky mac user. Normally this would work fine but i dont have it compiled for mac os rn its only in a .exe file. To get database working get the goLang compiler and cd into the GolangServerUnity folder and run the command:    go run .\\cmd\\main.go");
+        } else if (Application.platform == RuntimePlatform.LinuxEditor || Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxServer) {
+            Debug.Log("You use linux??!??!");
+        }
     }
 
     void Start() {
