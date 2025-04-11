@@ -53,6 +53,15 @@ func main() {
 	router.HandleFunc("/addRow", func(w http.ResponseWriter, r *http.Request) {
 		handlers.AddRow(w, r, db) // Pass db here
 	}).Methods("POST")
+	router.HandleFunc("/clearDatabase", func(w http.ResponseWriter, r *http.Request) {
+		handlers.ClearDatabase(w, r, db) // Pass db here
+	}).Methods("DELETE")
+	router.HandleFunc("/appendCSV", func(w http.ResponseWriter, r *http.Request) {
+		handlers.AppendCSV(w, r, db) // Pass db here
+	}).Methods("POST")
+	router.HandleFunc("/databaseToCSV", func(w http.ResponseWriter, r *http.Request) {
+		handlers.DatabaseToCSV(w, r, db) // Pass db here
+	}).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

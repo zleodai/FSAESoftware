@@ -7,24 +7,24 @@ import (
 func SetupDatabaseSchema(db *sql.DB) error {
 	_, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS PacketInfo (
-			PacketID INTEGER,
+			PacketID INTEGER PRIMARY KEY,
 			SessionID INTEGER,
 			LapID INTEGER,
 			PacketDatetime TEXT
 		);
 
 		CREATE TABLE IF NOT EXISTS LapInfo (
-			SessionID INTEGER,
+			SessionID INTEGER PRIMARY KEY,
 			LapID INTEGER,
 			LapTime INTEGER,
 			DriverName TEXT,
 			TrackName TEXT,
 			TrackConfiguration TEXT,
-			CarName TEXT
+			CarName TEXT,
 		);
 
 		CREATE TABLE IF NOT EXISTS TelemetryInfo (
-			PacketID INTEGER,
+			PacketID INTEGER PRIMARY KEY,
 			SessionID INTEGER,
 			LapID INTEGER,
 			SpeedMPH REAL,
@@ -50,7 +50,7 @@ func SetupDatabaseSchema(db *sql.DB) error {
 		);
 
 		CREATE TABLE IF NOT EXISTS TireInfo (
-			PacketID INTEGER,
+			PacketID INTEGER PRIMARY KEY,
 			SessionID INTEGER,
 			LapID INTEGER,
 			FL_CamberRad REAL,

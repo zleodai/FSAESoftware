@@ -36,7 +36,7 @@ func SqliteQuery(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		query = "SELECT * FROM PacketInfo WHERE PacketID >= ? AND PacketID <= ?"
 		rows, err = db.Query(query, start, end)
 	case "LapInfo":
-		query = "SELECT * FROM LapInfo WHERE LapID >= ? AND LapID <= ?" // Assuming LapID is the relevant range for LapInfo
+		query = "SELECT * FROM LapInfo WHERE SessionID >= ? AND SessionID <= ?"
 		rows, err = db.Query(query, start, end)
 	case "TelemetryInfo":
 		query = "SELECT * FROM TelemetryInfo WHERE PacketID >= ? AND PacketID <= ?"
@@ -595,4 +595,298 @@ func DeleteLap(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf("Lap %d and associated data deleted successfully", lapID)))
+}
+
+// ClearDatabase drops all tables and recreates them using helpers.SetupDatabase.
+func ClearDatabase(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	// Get a list of table names
+	rows, err := db.Query("SELECT name FROM sqlite_master WHERE type='table';")
+	if err != nil {
+		http.Error(w, "Failed to query table names", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var tableNames []string
+	for rows.Next() {
+		var tableName string
+		if err := rows.Scan(&tableName); err != nil {
+			http.Error(w, "Error scanning table name", http.StatusInternalServerError)
+			return
+		}
+		tableNames = append(tableNames, tableName)
+	}
+
+	// Drop each table
+	for _, tableName := range tableNames {
+		_, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s;", tableName))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to drop table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Recreate tables using helpers.SetupDatabase
+	err = helpers.SetupDatabaseSchema(db)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to setup database: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Database cleared and tables recreated successfully"))
+}
+
+// AppendCSV handles HTTP POST requests to append CSV data into an SQLite database,
+// re-assigning PacketIDs to ensure no duplicates and sequential order.
+func AppendCSV(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Find the largest existing SessionID
+	var maxSessionID int
+	var err error
+	err = db.QueryRow("SELECT MAX(SessionID) FROM LapInfo").Scan(&maxSessionID)
+	if err != nil && err != sql.ErrNoRows {
+		http.Error(w, fmt.Sprintf("Failed to get max SessionID: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+	if err == sql.ErrNoRows {
+		maxSessionID = 0 // No existing sessions, start from 0
+	}
+	sessionIDOffset := maxSessionID + 1
+
+	// Find the largest existing PacketID
+	var maxPacketID int
+	err = db.QueryRow("SELECT MAX(PacketID) FROM PacketInfo").Scan(&maxPacketID)
+	if err != nil && err != sql.ErrNoRows {
+		http.Error(w, fmt.Sprintf("Failed to get max PacketID: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+	if err == sql.ErrNoRows {
+		maxPacketID = 0 // No existing packets, start from 0
+	}
+
+	csvReader := csv.NewReader(r.Body) // Read from request body
+	defer r.Body.Close()               // Close request body after reading
+	csvReader.FieldsPerRecord = -1
+	csvReader.TrimLeadingSpace = true
+
+	records, err := csvReader.ReadAll()
+	if err != nil {
+		http.Error(w, "Failed to read CSV data from request body", http.StatusBadRequest)
+		return
+	}
+
+	if len(records) <= 1 {
+		http.Error(w, "CSV data must have header and at least one data row", http.StatusBadRequest)
+		return
+	}
+
+	headerRow := records[0]
+	sessionIDHeaderIndex := -1
+	for index, header := range headerRow {
+		if strings.EqualFold(header, "SessionID") {
+			sessionIDHeaderIndex = index
+			break
+		}
+	}
+
+	if sessionIDHeaderIndex == -1 {
+		http.Error(w, "CSV header must contain 'SessionID' column for AppendCSV", http.StatusBadRequest)
+		return
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		http.Error(w, "Failed to begin transaction", http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
+	insertedRowCount := 0
+	nextPacketID := maxPacketID + 1 // Start new PacketIDs from max + 1
+
+	for i, record := range records[1:] { // Skip header row
+		if len(record) != len(headerRow) {
+			http.Error(w, fmt.Sprintf("Row %d column count does not match header", i+2), http.StatusBadRequest)
+			return
+		}
+
+		// Assign new SessionID
+		record[sessionIDHeaderIndex] = strconv.Itoa(sessionIDOffset)
+		sessionIDOffset++
+		insertedRowCount++
+
+		// Assign new PacketID
+		record[0] = strconv.Itoa(nextPacketID)
+		nextPacketID++
+		insertedRowCount++
+
+		for tableName, schema := range tableSchemas {
+			tableHeaders := make([]string, 0)
+			tableValues := make([]string, 0)
+
+			for colIdx, header := range headerRow {
+				for _, schemaCol := range schema {
+					if strings.EqualFold(header, schemaCol) { // Case-insensitive comparison
+						value := record[colIdx]
+						if value != "" { // Only include columns with non-empty values
+							tableHeaders = append(tableHeaders, header)
+							tableValues = append(tableValues, value)
+						}
+						break // Move to the next header after finding a schema match
+					}
+				}
+			}
+
+			if len(tableHeaders) > 0 { // Only insert if there are columns for this table in the current row
+				valuePlaceholders := make([]string, len(tableHeaders))
+				for i := range tableHeaders {
+					valuePlaceholders[i] = "?"
+				}
+				insertQuery := "INSERT INTO " + tableName + " (" + strings.Join(tableHeaders, ", ") + ") VALUES (" + strings.Join(valuePlaceholders, ", ") + ")"
+
+				stmt, err := tx.Prepare(insertQuery)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Failed to prepare insert statement for table '%s': %s", tableName, err.Error()), http.StatusInternalServerError)
+					return
+				}
+				defer stmt.Close()
+
+				var args []interface{}
+				for _, val := range tableValues {
+					args = append(args, val)
+				}
+
+				_, err = stmt.Exec(args...)
+				if err != nil {
+					http.Error(w, fmt.Sprintf("Failed to execute insert statement for table '%s' in row %d: %s", tableName, i+2, err.Error()), http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
+		return
+	}
+
+	responseMessage := fmt.Sprintf("CSV data appended successfully. Inserted %d new rows, re-assigned PacketIDs starting from %d.", insertedRowCount, maxPacketID+1)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(responseMessage))
+}
+
+func DatabaseToCSV(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	// Get a list of table names
+	rows, err := db.Query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
+	if err != nil {
+		http.Error(w, "Failed to query table names", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var tableNames []string
+	for rows.Next() {
+		var tableName string
+		if err := rows.Scan(&tableName); err != nil {
+			http.Error(w, "Error scanning table name", http.StatusInternalServerError)
+			return
+		}
+		tableNames = append(tableNames, tableName)
+	}
+
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"database_export.csv\"")
+
+	csvWriter := csv.NewWriter(w)
+	defer csvWriter.Flush()
+
+	for _, tableName := range tableNames {
+		// Write table name as a comment in CSV
+		csvWriter.Write([]string{fmt.Sprintf("# Table: %s", tableName)})
+
+		// Query table columns
+		colRows, err := db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to query columns for table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+			return
+		}
+		defer colRows.Close()
+
+		var columns []string
+		for colRows.Next() {
+			var colInfo struct {
+				cid       int
+				name      string
+				dataType  string
+				notnull   int
+				dfltValue interface{}
+				pk        int
+			}
+			if err := colRows.Scan(&colInfo.cid, &colInfo.name, &colInfo.dataType, &colInfo.notnull, &colInfo.dfltValue, &colInfo.pk); err != nil {
+				http.Error(w, fmt.Sprintf("Error scanning column info for table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+				return
+			}
+			columns = append(columns, colInfo.name)
+		}
+		if len(columns) > 0 {
+			csvWriter.Write(columns) // Write column headers
+		}
+
+		// Query table data
+		dataRows, err := db.Query(fmt.Sprintf("SELECT * FROM %s", tableName))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to query data from table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+			return
+		}
+		defer dataRows.Close()
+
+		colTypes, err := dataRows.ColumnTypes()
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to get column types for table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+			return
+		}
+
+		for dataRows.Next() {
+			values := make([]interface{}, len(columns))
+			scanArgs := make([]interface{}, len(columns))
+			for i := range values {
+				scanArgs[i] = &values[i]
+			}
+
+			err := dataRows.Scan(scanArgs...)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error scanning row from table %s: %s", tableName, err.Error()), http.StatusInternalServerError)
+				return
+			}
+
+			strValues := make([]string, len(columns))
+			for i, val := range values {
+				if val == nil {
+					strValues[i] = ""
+					continue
+				}
+
+				switch colTypes[i].DatabaseTypeName() {
+				case "INTEGER", "REAL":
+					strValues[i] = fmt.Sprintf("%v", val)
+				case "TEXT", "BLOB":
+					b, ok := val.([]byte)
+					if ok {
+						strValues[i] = string(b)
+					} else {
+						strValues[i] = fmt.Sprintf("%v", val)
+					}
+				default:
+					strValues[i] = fmt.Sprintf("%v", val)
+				}
+			}
+			csvWriter.Write(strValues)
+		}
+	}
 }
