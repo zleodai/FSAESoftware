@@ -7,6 +7,8 @@ public class MainManager : MonoBehaviour
 
 
     public long SelectedPacketID = 0;
+
+    public DatabaseAccess.Packet SelectedPacket;
     
     public bool Paused = true;
 
@@ -29,7 +31,7 @@ public class MainManager : MonoBehaviour
             playingStep = localTime + PlayingStepRate;
             SelectedPacketID += 1;
             
-            DatabaseAccess.Instance.Log($"{DatabaseAccess.Instance.RecievedPackets[SelectedPacketID]}");
+            SelectedPacket = DatabaseAccess.Instance.RecievedPackets.ContainsKey(SelectedPacketID) ? DatabaseAccess.Instance.RecievedPackets[SelectedPacketID] : null;
         }
     }
 }
