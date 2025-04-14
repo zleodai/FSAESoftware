@@ -5,55 +5,48 @@ using System.Collections.Generic;
 public class LineRenderer : Graphic
 {
     public GraphController gc;
+    public float marginLeft = 100f;
+    public float marginBottom = 100f;
 
     public List<Vector2> Points = new List<Vector2>();
     public float thickness = 2f;
 
     // Max values of the data
-    public int xmax = 100;
-    public int ymax = 100;
+    public float xmax = 100f;
+    public float ymax = 100f;
 
     // Dimensions in pixels that the graph should occupy
-    public float xgraphmax;
-    public float ygraphmax;
-
-    public int xmin = 0;
-    public int ymin = 0;
+    public float xgraphmax = 300f;
+    public float ygraphmax = 200f;
 
     protected override void Start()
     {
-        RectTransform rt = GetComponent(typeof(RectTransform)) as RectTransform;
-        rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
-
-        xmax = gc.xmax;
-        ymax = gc.ymax;
-
-        xmin = gc.xmin;
-        ymin = gc.ymin;
+        if (gc != null)
+        {
+            RectTransform rt = GetComponent<RectTransform>();
+            // Set the full size including margins
+            rt.sizeDelta = new Vector2(gc.xgraphmax + marginLeft + 20f, gc.ygraphmax + marginBottom + 20f);
+            xmax = gc.xmax;
+            ymax = gc.ymax;
+            xgraphmax = gc.xgraphmax;
+            ygraphmax = gc.ygraphmax;
+        }
     }
 
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         vh.Clear();
-        xgraphmax = rectTransform.rect.width;
-        ygraphmax = rectTransform.rect.height;
 
         if (Points == null || Points.Count < 2)
             return;
 
         // Convert data points into graph-space positions
         List<Vector2> scaledPoints = new List<Vector2>();
-        float xRange = Mathf.Max(1, xmax - xmin);
-        float yRange = Mathf.Max(1, ymax - ymin);
-
         foreach (Vector2 point in Points)
         {
-            float xNorm = Mathf.Clamp01((point.x - xmin) / xRange);
-            float yNorm = Mathf.Clamp01((point.y - ymin) / yRange);
-
-            float x = xNorm * xgraphmax;
-            float y = yNorm * ygraphmax;
-
+            // Scale the data points to fit the graph area and offset by margins
+            float x = marginLeft + (point.x / xmax * xgraphmax);
+            float y = marginBottom + (point.y / ymax * ygraphmax);
             scaledPoints.Add(new Vector2(x, y));
         }
 
