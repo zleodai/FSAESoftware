@@ -8,57 +8,52 @@ public class GraphAxes : MonoBehaviour
     public RectTransform graphContainer;
 
     [Header("Graph Margins (pixels)")]
-    public float marginLeft = 0f;  // Increased left margin for more label space
-    public float marginRight = 0f;
-    public float marginTop = 0f;
-    public float marginBottom = 0f; // Increased bottom margin for larger labels
+    public float marginLeft = 100f;
+    public float marginRight = 20f;
+    public float marginTop = 20f;
+    public float marginBottom = 100f;
 
     [Header("Axis Settings")]
     public float xMin = 0f;
-    public float xMax = 10f;
+    public float xMax;
     public float yMin = 0f;
-    public float yMax = 10f;
+    public float yMax;
     public int xAxisDivisions = 10;
     public int yAxisDivisions = 10;
 
     [Header("UI Settings")]
     public Sprite lineSprite;
     public Font labelFont;
-    public int fontSize = 16;  // Made font size configurable
-    public string xAxisLabel = "X Axis";  // Made axis labels configurable
+    public int fontSize = 16;
+    public string xAxisLabel = "X Axis";
     public string yAxisLabel = "Y Axis";
-    public float labelSpacing = 25f;  // Made label spacing configurable
+    public float labelSpacing = 25f;
 
     private List<GameObject> labelObjects = new List<GameObject>();
     private List<GameObject> lineObjects = new List<GameObject>();
+    private float graphWidth;
+    private float graphHeight;
+    private GraphController graphController;
 
     void Awake()
     {
-        // Get the GraphController component from one of the parent GameObjects.
-        GraphController gc = GetComponentInParent<GraphController>();
-        //UNCOMMENT ^
-
-        //Get the RectTransform attached to this GameObject.
-        RectTransform rt = GetComponent(typeof(RectTransform)) as RectTransform;
-        //UNCOMMENT ^
-
-        if (gc != null && rt != null)
+        graphController = GetComponentInParent<GraphController>();
+        if (graphController == null)
         {
-            // Set the sizeDelta (width and height) to the values from GraphController.
-            rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
+            Debug.LogError("GraphController not found!");
+            return;
         }
-        else
+
+        RectTransform rt = GetComponent<RectTransform>();
+        if (rt != null)
         {
-            Debug.LogWarning("GraphController or RectTransform not found.");
-        }
-        if (graphContainer != null)
-        {
-            // Make the container stretch with the panel
-            graphContainer.anchorMin = Vector2.zero;
-            graphContainer.anchorMax = Vector2.one;
-            graphContainer.pivot = Vector2.zero;
-            graphContainer.anchoredPosition = Vector2.zero;
-            graphContainer.sizeDelta = Vector2.zero;
+            // Set the full size including margins
+            graphWidth = graphController.xgraphmax + marginLeft + marginRight;
+            graphHeight = graphController.ygraphmax + marginTop + marginBottom;
+            rt.sizeDelta = new Vector2(graphWidth, graphHeight);
+            
+            xMax = graphController.xmax;
+            yMax = graphController.ymax;
         }
     }
 
@@ -69,84 +64,74 @@ public class GraphAxes : MonoBehaviour
 
     public void CreateAxes()
     {
-        // Clear old elements
         foreach (GameObject obj in labelObjects) Destroy(obj);
         labelObjects.Clear();
         foreach (GameObject obj in lineObjects) Destroy(obj);
         lineObjects.Clear();
 
-        float totalWidth = graphContainer.rect.width;
-        float totalHeight = graphContainer.rect.height;
+        float xAxisLength = graphController.xgraphmax;
+        float yAxisLength = graphController.ygraphmax;
 
-        float xAxisLength = totalWidth - marginLeft - marginRight;
-        float yAxisLength = totalHeight - marginTop - marginBottom;
-
-        if (xAxisLength < 0 || yAxisLength < 0)
-        {
-            Debug.LogWarning("Margins are too large for the panel size.");
-            return;
-        }
-
-        Vector2 origin = new Vector2(marginLeft, marginBottom);
-
-        // Draw X Axis
-        GameObject xAxis = CreateLine("X Axis", origin, new Vector2(marginLeft + xAxisLength, marginBottom));
+        // Draw X Axis at the bottom margin
+        Vector2 xStart = new Vector2(marginLeft, marginBottom);
+        Vector2 xEnd = new Vector2(marginLeft + xAxisLength, marginBottom);
+        GameObject xAxis = CreateLine("X Axis", xStart, xEnd);
         lineObjects.Add(xAxis);
+
+        // Draw Y Axis at the left margin
+        Vector2 yStart = new Vector2(marginLeft, marginBottom);
+        Vector2 yEnd = new Vector2(marginLeft, marginBottom + yAxisLength);
+        GameObject yAxis = CreateLine("Y Axis", yStart, yEnd);
+        lineObjects.Add(yAxis);
 
         // X-Axis tick marks and labels
         float tickHeight = 5f;
-        float labelOffset = labelSpacing;
         for (int i = 0; i <= xAxisDivisions; i++)
         {
             float t = i / (float)xAxisDivisions;
-            float xPos = Mathf.Lerp(origin.x, origin.x + xAxisLength, t);
+            float xPos = marginLeft + (t * xAxisLength);
+            float dataValue = t * xMax;
 
-            // Tick mark pointing down
+            // Draw tick
             GameObject tick = CreateLine("X Tick " + i,
                 new Vector2(xPos, marginBottom),
                 new Vector2(xPos, marginBottom - tickHeight));
             lineObjects.Add(tick);
 
-            // Label below the tick
-            float currentVal = Mathf.Lerp(xMin, xMax, t);
-            Vector2 labelPos = new Vector2(xPos, marginBottom - tickHeight - labelOffset);
-            GameObject label = CreateText(currentVal.ToString("0.##"), labelPos, TextAnchor.UpperCenter);
+            // Create label
+            Vector2 labelPos = new Vector2(xPos, marginBottom - tickHeight - labelSpacing);
+            GameObject label = CreateText(dataValue.ToString("0"), labelPos, TextAnchor.UpperCenter);
             labelObjects.Add(label);
         }
 
-        // Draw Y Axis
-        GameObject yAxis = CreateLine("Y Axis", origin, new Vector2(marginLeft, marginBottom + yAxisLength));
-        lineObjects.Add(yAxis);
-
         // Y-Axis tick marks and labels
         float tickWidth = 5f;
-        labelOffset = labelSpacing;
         for (int i = 0; i <= yAxisDivisions; i++)
         {
             float t = i / (float)yAxisDivisions;
-            float yPos = Mathf.Lerp(origin.y, origin.y + yAxisLength, t);
+            float yPos = marginBottom + (t * yAxisLength);
+            float dataValue = t * yMax;
 
-            // Tick mark pointing left
+            // Draw tick
             GameObject tick = CreateLine("Y Tick " + i,
                 new Vector2(marginLeft, yPos),
                 new Vector2(marginLeft - tickWidth, yPos));
             lineObjects.Add(tick);
 
-            // Label to the left of tick, moved further left
-            float currentVal = Mathf.Lerp(yMin, yMax, t);
-            Vector2 labelPos = new Vector2(marginLeft - tickWidth - labelOffset - 15f, yPos);  // Added extra offset
-            GameObject label = CreateText(currentVal.ToString("0.##"), labelPos, TextAnchor.MiddleRight);
+            // Create label - using same spacing as x-axis
+            Vector2 labelPos = new Vector2(marginLeft - tickWidth - (labelSpacing * 2), yPos);
+            GameObject label = CreateText(dataValue.ToString("0"), labelPos, TextAnchor.MiddleRight);
             labelObjects.Add(label);
         }
 
-        // Axis titles
+        // Add axis labels
         GameObject xTitle = CreateText(xAxisLabel,
             new Vector2(marginLeft + xAxisLength / 2f, marginBottom / 2f),
             TextAnchor.MiddleCenter);
         labelObjects.Add(xTitle);
 
         GameObject yTitle = CreateText(yAxisLabel,
-            new Vector2(marginLeft / 2f - 15f, marginBottom + yAxisLength / 2f),  // Moved Y axis title more left
+            new Vector2(marginLeft / 2f - (labelSpacing * 1.5f), marginBottom + yAxisLength / 2f),
             TextAnchor.MiddleCenter);
         yTitle.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 90);
         labelObjects.Add(yTitle);
@@ -155,11 +140,11 @@ public class GraphAxes : MonoBehaviour
     private GameObject CreateText(string textString, Vector2 anchoredPos, TextAnchor alignment)
     {
         GameObject textGO = new GameObject("Label", typeof(Text));
-        textGO.transform.SetParent(graphContainer, false);
+        textGO.transform.SetParent(transform, false);
         Text text = textGO.GetComponent<Text>();
         text.text = textString;
         text.font = labelFont;
-        text.fontSize = fontSize;  // Use the configurable font size
+        text.fontSize = fontSize;
         text.alignment = alignment;
         text.color = Color.black;
 
@@ -168,14 +153,14 @@ public class GraphAxes : MonoBehaviour
         rt.anchorMax = Vector2.zero;
         rt.pivot = new Vector2(0.5f, 0.5f);
         rt.anchoredPosition = anchoredPos;
-        rt.sizeDelta = new Vector2(60, 30);  // Increased text box size
+        rt.sizeDelta = new Vector2(60, 30);
         return textGO;
     }
 
     private GameObject CreateLine(string name, Vector2 startPoint, Vector2 endPoint)
     {
         GameObject line = new GameObject(name, typeof(Image));
-        line.transform.SetParent(graphContainer, false);
+        line.transform.SetParent(transform, false);
         Image image = line.GetComponent<Image>();
         image.sprite = lineSprite;
         image.color = Color.black;

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class LineRenderer : Graphic
 {
     public GraphController gc;
+    public float marginLeft = 100f;
+    public float marginBottom = 100f;
 
     public List<Vector2> Points = new List<Vector2>();
     public float thickness = 2f;
@@ -19,17 +21,21 @@ public class LineRenderer : Graphic
 
     protected override void Start()
     {
-        RectTransform rt = GetComponent(typeof(RectTransform)) as RectTransform;
-        rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
-        xmax = gc.xmax;
-        ymax = gc.ymax;
+        if (gc != null)
+        {
+            RectTransform rt = GetComponent<RectTransform>();
+            // Set the full size including margins
+            rt.sizeDelta = new Vector2(gc.xgraphmax + marginLeft + 20f, gc.ygraphmax + marginBottom + 20f);
+            xmax = gc.xmax;
+            ymax = gc.ymax;
+            xgraphmax = gc.xgraphmax;
+            ygraphmax = gc.ygraphmax;
+        }
     }
 
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         vh.Clear();
-        xgraphmax = rectTransform.rect.width;
-        ygraphmax = rectTransform.rect.height;
 
         if (Points == null || Points.Count < 2)
             return;
@@ -38,8 +44,9 @@ public class LineRenderer : Graphic
         List<Vector2> scaledPoints = new List<Vector2>();
         foreach (Vector2 point in Points)
         {
-            float x = Mathf.Clamp01(point.x / xmax) * xgraphmax;
-            float y = Mathf.Clamp01(point.y / ymax) * ygraphmax;
+            // Scale the data points to fit the graph area and offset by margins
+            float x = marginLeft + (point.x / xmax * xgraphmax);
+            float y = marginBottom + (point.y / ymax * ygraphmax);
             scaledPoints.Add(new Vector2(x, y));
         }
 
