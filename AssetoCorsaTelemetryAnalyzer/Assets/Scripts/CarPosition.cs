@@ -1,24 +1,14 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class CarPosition : MonoBehaviour
 {
-    private long lastSelectedPacketID = -404;
+    private RectTransform t;
 
-    void Update() {
-        long selectedPacketID = MainManager.Instance.SelectedPacketID;
+    void Awake(){
+        t = GetComponent<RectTransform>();
+    }
 
-        if (lastSelectedPacketID != selectedPacketID) {
-            if (DatabaseAccess.Instance.RecievedPackets.ContainsKey(selectedPacketID)) {
-                DatabaseAccess.Packet packet = DatabaseAccess.Instance.RecievedPackets[selectedPacketID];
-
-                Vector3 position = new Vector3(packet.TelemetryData.WorldPositionX, packet.TelemetryData.WorldPositionY, packet.TelemetryData.WorldPositionZ);
-                gameObject.transform.localPosition = position;
-            } else {
-                DatabaseAccess.Instance.QueryPackets(MainManager.Instance.SelectedPacketID, MainManager.Instance.SelectedPacketID + 100);
-            }
-            
-            lastSelectedPacketID = selectedPacketID;
-        }
+    public void MovePosition(Vector2 p) {
+        t.localPosition = p;
     }
 }

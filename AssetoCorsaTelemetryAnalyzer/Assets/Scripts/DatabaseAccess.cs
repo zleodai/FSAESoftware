@@ -35,6 +35,9 @@ public class DatabaseAccess : MonoBehaviour {
     public Dictionary<long, Packet> RecievedPackets = new Dictionary<long, Packet>();
     public Dictionary<(int, int), LapInfo> RecievedSessionLaps = new Dictionary<(int, int), LapInfo>();
 
+    public Dictionary<long, TelemetryInfo> RecievedTelemetryInfo = new Dictionary<long, TelemetryInfo>();
+    public bool TelemetryInfoQueried = false;
+
     [Header("Options")]
     public bool LogFetchOutput;
 
@@ -159,6 +162,10 @@ public class DatabaseAccess : MonoBehaviour {
         StartCoroutine(QueryRequest(4, packetIDStart, packetIDEnd));
     }
 
+    public void QueryTelemetryInfo(long packetIDStart, long packetIDEnd) {
+        StartCoroutine(QueryRequestTelemetry(packetIDStart, packetIDEnd));
+    }
+
     public void QuerySessionLap(int sessionID, int lapID) {
         StartCoroutine(QueryRequest(2, sessionID, lapID));
     }
@@ -206,6 +213,48 @@ public class DatabaseAccess : MonoBehaviour {
                 }
             } else {
                 Debug.Log($"Error Got Mismatched Lengths packetDataList {recievedPacketDataList.Length} items, telemetryDataList {recievedTelemetryDataList.Length} items, tireDataList {recievedTireDataList.Length} items");
+            }
+        }
+    }
+
+    private IEnumerator QueryRequestTelemetry(long start, long end) {
+        //Query Types
+        //1 = query PacketInfo from PackedID to PacketID
+        //2 = query LapInfo from LapID to LapID
+        //3 = query TelemetryInfo from PacketID to PacketID
+        //4 = query TireInfo from PacketID to PacketID
+
+        string uri = $"http://localhost:8080/sqliteQuery?table=TelemetryInfo&start={start}&end={end}";
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri)) {
+            yield return webRequest.SendWebRequest();
+  
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result) {
+                case UnityWebRequest.Result.ConnectionError:
+                    Debug.LogError("Connection Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    string[] infoBits = webRequest.downloadHandler.text.Substring(1, webRequest.downloadHandler.text.Length-3).Split("},");
+                    for (int i = 0; i < infoBits.Length; i++) {
+                        TelemetryInfo telemetryInfo;
+                        if (i == infoBits.Length -1) { 
+                            telemetryInfo = JsonUtility.FromJson<TelemetryInfo>(infoBits[i]); 
+                        } else {
+                            telemetryInfo = JsonUtility.FromJson<TelemetryInfo>(infoBits[i] + "}");
+                        }
+                        RecievedTelemetryInfo[telemetryInfo.PacketID] = telemetryInfo;
+                    }
+                    TelemetryInfoQueried = true;
+                    break;
             }
         }
     }

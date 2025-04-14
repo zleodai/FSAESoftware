@@ -14,7 +14,7 @@ func SetupDatabaseSchema(db *sql.DB) error {
 		);
 
 		CREATE TABLE IF NOT EXISTS LapInfo (
-			SessionID INTEGER PRIMARY KEY,
+			SessionID INTEGER,
 			LapID INTEGER,
 			LapTime INTEGER,
 			DriverName TEXT,

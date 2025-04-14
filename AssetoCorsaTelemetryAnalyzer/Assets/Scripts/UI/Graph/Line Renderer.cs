@@ -19,6 +19,10 @@ public class LineRenderer : Graphic
 
     protected override void Start()
     {
+        RefreshValues();
+    }
+
+    private void RefreshValues() {
         if (gc != null)
         {
             RectTransform rt = GetComponent<RectTransform>();
@@ -77,6 +81,7 @@ public class LineRenderer : Graphic
     public void SetPoints(List<Vector2> newPoints)
     {
         Points = newPoints;
+        RefreshValues();
         SetVerticesDirty();
     }
 }
