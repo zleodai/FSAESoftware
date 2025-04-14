@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1d792512efe123b499dfab1fb276f9da
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 315204
+  packageName: Car Speedometer Pro
+  packageVersion: 1.0
+  assetPath: Assets/Car Speedometer Pro/Scripts/SpeedometerController.cs
+  uploadId: 743692
