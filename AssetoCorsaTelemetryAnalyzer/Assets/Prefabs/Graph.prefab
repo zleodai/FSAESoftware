@@ -17,16 +17,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4141227599911978270
-Transform:
+--- !u!224 &4141227599911978270
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6974816010963696291}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -861, y: -377, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34,6 +33,11 @@ Transform:
   - {fileID: 2374303309508606419}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2777245822780933004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,8 +54,8 @@ MonoBehaviour:
   ymax: 150
   xmin: 0
   ymin: 0
-  xgraphmax: 800
-  ygraphmax: 500
+  xgraphmax: 600
+  ygraphmax: 200
 --- !u!1 &8292916024763193472
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,11 +195,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5034924892156421393, guid: f14f32eccd005f641ab103830261301e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 920
+      value: 720
       objectReference: {fileID: 0}
     - target: {fileID: 5034924892156421393, guid: f14f32eccd005f641ab103830261301e, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 620
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 5034924892156421393, guid: f14f32eccd005f641ab103830261301e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -249,6 +253,14 @@ PrefabInstance:
       propertyPath: gc
       value: 
       objectReference: {fileID: 2777245822780933004}
+    - target: {fileID: 5386075554547901061, guid: f14f32eccd005f641ab103830261301e, type: 3}
+      propertyPath: xgraphmax
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 5386075554547901061, guid: f14f32eccd005f641ab103830261301e, type: 3}
+      propertyPath: ygraphmax
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 7355079709005461083, guid: f14f32eccd005f641ab103830261301e, type: 3}
       propertyPath: m_Name
       value: Line Renderer
