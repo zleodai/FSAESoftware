@@ -8,10 +8,10 @@ public class GraphAxes : MonoBehaviour
     public RectTransform graphContainer;
 
     [Header("Graph Margins (pixels)")]
-    public float marginLeft = 80f;  // Increased left margin for more label space
-    public float marginRight = 20f;
-    public float marginTop = 20f;
-    public float marginBottom = 50f; // Increased bottom margin for larger labels
+    public float marginLeft = 0f;  // Increased left margin for more label space
+    public float marginRight = 0f;
+    public float marginTop = 0f;
+    public float marginBottom = 0f; // Increased bottom margin for larger labels
 
     [Header("Axis Settings")]
     public float xMin = 0f;
@@ -35,22 +35,22 @@ public class GraphAxes : MonoBehaviour
     void Awake()
     {
         // Get the GraphController component from one of the parent GameObjects.
-        //GraphController gc = GetComponentInParent<GraphController>();
-        //UNCOMMENT ^
-        
-        //Get the RectTransform attached to this GameObject.
-        //RectTransform rt = GetComponent<RectTransform>();
+        GraphController gc = GetComponentInParent<GraphController>();
         //UNCOMMENT ^
 
-        // if (gc != null && rt != null)
-        // {
-        //     // Set the sizeDelta (width and height) to the values from GraphController.
-        //     rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
-        // }
-        // else
-        // {
-        //     Debug.LogWarning("GraphController or RectTransform not found.");
-        // }
+        //Get the RectTransform attached to this GameObject.
+        RectTransform rt = GetComponent(typeof(RectTransform)) as RectTransform;
+        //UNCOMMENT ^
+
+        if (gc != null && rt != null)
+        {
+            // Set the sizeDelta (width and height) to the values from GraphController.
+            rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
+        }
+        else
+        {
+            Debug.LogWarning("GraphController or RectTransform not found.");
+        }
         if (graphContainer != null)
         {
             // Make the container stretch with the panel
