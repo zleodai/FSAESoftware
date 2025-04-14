@@ -11,6 +11,7 @@ using Debug = UnityEngine.Debug;
 public class DatabaseAccess : MonoBehaviour {
     public static DatabaseAccess Instance { get; private set; }
     
+    [Header("Terminal")]
     public Canvas Terminal;
     private TextMeshProUGUI outputTextBox;
 
@@ -21,6 +22,8 @@ public class DatabaseAccess : MonoBehaviour {
     public int terminalLineP;
     private List<string> terminalLines;
     private bool terminalActive = false;
+
+    public bool TerminalEnabled;
 
     private PacketInfo[] recievedPacketDataList;
     private bool gotPacketDataList = false;
@@ -180,11 +183,11 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     void Start() {
-        TerminalStart();
+        if (TerminalEnabled) { TerminalStart(); }
     }
 
     void Update() {
-        TerminalUpdate();
+        if (TerminalEnabled) { TerminalUpdate(); }
 
         if (gotPacketDataList && gotTelemetryDataList && gotTireDataList) {
             gotPacketDataList = false;
@@ -333,6 +336,8 @@ public class DatabaseAccess : MonoBehaviour {
     }
 
     private void TerminalStart() {
+        Terminal.gameObject.SetActive(true);
+
         outputTextBox = Terminal.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
 
         terminalLineP = 0;
