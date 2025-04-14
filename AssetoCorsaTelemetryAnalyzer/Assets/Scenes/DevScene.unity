@@ -182,7 +182,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xmax: 500
-  ymax: 150
+  ymax: 200
+  xmin: 0
+  ymin: 0
   xgraphmax: 500
   ygraphmax: 500
 --- !u!224 &224619579 stripped
@@ -386,9 +388,11 @@ MonoBehaviour:
   - {x: 10, y: 0}
   thickness: 2
   xmax: 500
-  ymax: 150
+  ymax: 200
   xgraphmax: 500
   ygraphmax: 500
+  xmin: 0
+  ymin: 30
 --- !u!222 &348169297
 CanvasRenderer:
   m_ObjectHideFlags: 0

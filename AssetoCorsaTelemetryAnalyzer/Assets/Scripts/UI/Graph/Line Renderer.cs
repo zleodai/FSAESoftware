@@ -10,19 +10,26 @@ public class LineRenderer : Graphic
     public float thickness = 2f;
 
     // Max values of the data
-    public float xmax = 100f;
-    public float ymax = 100f;
+    public int xmax = 100;
+    public int ymax = 100;
 
     // Dimensions in pixels that the graph should occupy
-    public float xgraphmax = 300f;
-    public float ygraphmax = 200f;
+    public float xgraphmax;
+    public float ygraphmax;
+
+    public int xmin = 0;
+    public int ymin = 0;
 
     protected override void Start()
     {
         RectTransform rt = GetComponent(typeof(RectTransform)) as RectTransform;
         rt.sizeDelta = new Vector2(gc.xgraphmax, gc.ygraphmax);
+
         xmax = gc.xmax;
         ymax = gc.ymax;
+
+        xmin = gc.xmin;
+        ymin = gc.ymin;
     }
 
     protected override void OnPopulateMesh(VertexHelper vh)
@@ -36,10 +43,17 @@ public class LineRenderer : Graphic
 
         // Convert data points into graph-space positions
         List<Vector2> scaledPoints = new List<Vector2>();
+        float xRange = Mathf.Max(1, xmax - xmin);
+        float yRange = Mathf.Max(1, ymax - ymin);
+
         foreach (Vector2 point in Points)
         {
-            float x = Mathf.Clamp01(point.x / xmax) * xgraphmax;
-            float y = Mathf.Clamp01(point.y / ymax) * ygraphmax;
+            float xNorm = Mathf.Clamp01((point.x - xmin) / xRange);
+            float yNorm = Mathf.Clamp01((point.y - ymin) / yRange);
+
+            float x = xNorm * xgraphmax;
+            float y = yNorm * ygraphmax;
+
             scaledPoints.Add(new Vector2(x, y));
         }
 
