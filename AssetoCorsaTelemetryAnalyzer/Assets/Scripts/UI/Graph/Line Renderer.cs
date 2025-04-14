@@ -11,11 +11,9 @@ public class LineRenderer : Graphic
     public List<Vector2> Points = new List<Vector2>();
     public float thickness = 2f;
 
-    // Max values of the data
     public float xmax = 100f;
     public float ymax = 100f;
 
-    // Dimensions in pixels that the graph should occupy
     public float xgraphmax = 300f;
     public float ygraphmax = 200f;
 
@@ -24,7 +22,6 @@ public class LineRenderer : Graphic
         if (gc != null)
         {
             RectTransform rt = GetComponent<RectTransform>();
-            // Set the full size including margins
             rt.sizeDelta = new Vector2(gc.xgraphmax + marginLeft + 20f, gc.ygraphmax + marginBottom + 20f);
             xmax = gc.xmax;
             ymax = gc.ymax;
@@ -40,11 +37,9 @@ public class LineRenderer : Graphic
         if (Points == null || Points.Count < 2)
             return;
 
-        // Convert data points into graph-space positions
         List<Vector2> scaledPoints = new List<Vector2>();
         foreach (Vector2 point in Points)
         {
-            // Scale the data points to fit the graph area and offset by margins
             float x = marginLeft + (point.x / xmax * xgraphmax);
             float y = marginBottom + (point.y / ymax * ygraphmax);
             scaledPoints.Add(new Vector2(x, y));
