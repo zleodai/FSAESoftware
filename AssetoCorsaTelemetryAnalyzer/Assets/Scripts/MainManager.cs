@@ -51,7 +51,7 @@ public class MainManager : MonoBehaviour
         db.QueryTelemetryInfo(StartPacketID, EndPacketID);
     }
 
-    void FixedUpdate() {
+    void Update() {
         if (!setTrackMap && db.TelemetryInfoQueried) {
             setTrackMap = true;
             float[] trackData = new float[(EndPacketID-StartPacketID +1)*2];
@@ -63,7 +63,7 @@ public class MainManager : MonoBehaviour
             trackMap.TrackData = trackData;
         }
 
-        localTime += Time.fixedDeltaTime;
+        localTime += Time.deltaTime;
         if (!Paused && localTime > playingStep && db.TelemetryInfoQueried) {
             playingStep = localTime + PlayingStepRate;
             SelectedPacketID += 1;
@@ -71,7 +71,7 @@ public class MainManager : MonoBehaviour
             if (SelectedPacketID > EndPacketID) { SelectedPacketID = StartPacketID; }
             
             SelectedTelemetryInfo = DatabaseAccess.Instance.RecievedTelemetryInfo.ContainsKey(SelectedPacketID) ? DatabaseAccess.Instance.RecievedTelemetryInfo[SelectedPacketID] : null;
-
+            
             speedometer.throttleSliderValue = SelectedTelemetryInfo.Gas;
             speedometer.brakeSliderValue = SelectedTelemetryInfo.Brake;
             speedometer.currentSpeedText.text = $"{Mathf.RoundToInt(SelectedTelemetryInfo.SpeedMPH)}";
