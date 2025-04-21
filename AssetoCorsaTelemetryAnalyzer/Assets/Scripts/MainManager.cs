@@ -72,6 +72,8 @@ public class MainManager : MonoBehaviour
             
             SelectedTelemetryInfo = DatabaseAccess.Instance.RecievedTelemetryInfo.ContainsKey(SelectedPacketID) ? DatabaseAccess.Instance.RecievedTelemetryInfo[SelectedPacketID] : null;
             
+            if (SelectedTelemetryInfo == null) { return; }
+
             speedometer.throttleSliderValue = SelectedTelemetryInfo.Gas;
             speedometer.brakeSliderValue = SelectedTelemetryInfo.Brake;
             speedometer.currentSpeedText.text = $"{Mathf.RoundToInt(SelectedTelemetryInfo.SpeedMPH)}";
