@@ -2435,8 +2435,20 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5929667973668972752, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5929667973668972752, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6746941308665277040, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6746941308665277040, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6863438927830881320, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
@@ -2451,9 +2463,17 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6863438927830881320, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7019094686980097217, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
       propertyPath: m_Name
       value: Vertical Scrollable Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7019094686980097217, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7906292432652220256, guid: 20ab08db134a4354a9fee6894eb19be7, type: 3}
       propertyPath: m_Size

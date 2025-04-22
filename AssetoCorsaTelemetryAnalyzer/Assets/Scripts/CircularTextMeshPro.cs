@@ -1,16 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// An extension of TextMeshPro that causes the text to be displayed in a
-/// circular arc.
-///
-/// Adapted from https://github.com/TonyViT/CurvedTextMeshPro and improved.
-/// TonyViT's version has some unnecessary properties and doesn't use the
-/// OnPreRenderText event, which allows for fewer mesh updates.
-/// </summary>
-[ExecuteInEditMode]
-[RequireComponent(typeof(TextMeshProUGUI))]
 public class CircularTextMeshPro : MonoBehaviour {
     protected TextMeshProUGUI m_TextComponent;
 
