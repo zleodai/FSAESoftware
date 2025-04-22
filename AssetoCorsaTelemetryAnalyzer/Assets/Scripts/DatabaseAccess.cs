@@ -362,7 +362,7 @@ public class DatabaseAccess : MonoBehaviour {
 
     private IEnumerator RandomInsert() {
         using (UnityWebRequest request = new UnityWebRequest("http://localhost:8080/csvInsert", UnityWebRequest.kHttpVerbPOST)) {
-            request.SetRequestHeader("Content-Type", "test/csv");
+            request.SetRequestHeader("Content-Type", "text/csv");
             request.uploadHandler = new UploadHandlerFile("./telemetryData/RandomInsertData.csv");
 
             yield return request.SendWebRequest();
