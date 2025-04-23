@@ -64,7 +64,7 @@ function script.onShowWindow()
     mapScale = 1
 
     playerCar = ac.getCar(0)
-
+    
     -- TelemetryCollection
 
     ---@type DBLink
