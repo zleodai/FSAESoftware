@@ -1,6 +1,9 @@
 CREATE TABLE telemetry (
     id                              int8,
+<<<<<<< Updated upstream:Telemetry App/databaseAPI/SQLCreateDB.sql
     lap_id                          int8,
+=======
+>>>>>>> Stashed changes:Database/SQLCreateDB.sql
     date_entry                      date,
     time_step                       time,
     tire_temps                      float[4],
