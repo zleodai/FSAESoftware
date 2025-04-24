@@ -605,6 +605,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 678375844}
     m_Modifications:
     - target: {fileID: 2234458430286382424, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: xMin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2234458430286382424, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xAxisLabel
       value: Time
       objectReference: {fileID: 0}
@@ -616,9 +620,25 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 720
       objectReference: {fileID: 0}
+    - target: {fileID: 2374303309508606419, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374303309508606419, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xmax
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: xmin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: ymax
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xgraphmax
@@ -926,6 +946,10 @@ PrefabInstance:
     - target: {fileID: 2234458430286382424, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: yAxisLabel
       value: Speed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374303309508606419, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xmax
@@ -1660,6 +1684,10 @@ PrefabInstance:
       propertyPath: yAxisLabel
       value: Brake Input
       objectReference: {fileID: 0}
+    - target: {fileID: 2374303309508606419, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xmax
       value: 50
@@ -1845,6 +1873,10 @@ PrefabInstance:
     - target: {fileID: 2234458430286382424, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: yAxisLabel
       value: Throttle Input
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374303309508606419, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 2777245822780933004, guid: ea2087112cbf179468d2a0fb26dee4f9, type: 3}
       propertyPath: xmax

@@ -10,3 +10,6 @@ function DBLink:new(dbHttp)
     dbLink.dbHttp = dbHttp
     return dbLink
 end
+
+---@class Packet
+---@field dbHttp string

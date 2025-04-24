@@ -26,7 +26,7 @@ public class LineRenderer : Graphic
         if (gc != null)
         {
             RectTransform rt = GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(gc.xgraphmax + marginLeft + 20f, gc.ygraphmax + marginBottom + 20f);
+            rt.sizeDelta = new Vector2(gc.xgraphmax + marginLeft + 20f, gc.ygraphmax);
             xmax = gc.xmax;
             ymax = gc.ymax;
             xgraphmax = gc.xgraphmax;
